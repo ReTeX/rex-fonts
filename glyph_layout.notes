@@ -1,0 +1,13 @@
+ [ Tex Command ]   -> [ AtomType, GlyphId ]   # HashMap?
+ [ Unicode Input ] -> [ AtomType, GlyphId ]   # Array?
+
+ [ GlyphId ] -> [
+    BoundingBox: (x_min, y_min, x_max, y_max),
+    Advanced: u16
+    Left_side_thing: i16
+    Italics Correction: i16
+    Attachment: i16,
+    ExtendedShape: i16 ] # Array?
+
+Attachments: ???
+Extended Shape: ???
