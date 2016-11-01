@@ -2,12 +2,43 @@
  [ Unicode Input ] -> [ AtomType, GlyphId ]   # Array?
 
  [ GlyphId ] -> [
+    unicode: u32,
     BoundingBox: (x_min, y_min, x_max, y_max),
-    Advanced: u16
-    Left_side_thing: i16
-    Italics Correction: i16
-    Attachment: i16,
-    ExtendedShape: i16 ] # Array?
+    advance: u16
+    left_side_bearing: i16
+    italics_correction: i16
+    attachment: i16,
+    ExtendedShape: bool ] # Array?
 
-Attachments: ???
-Extended Shape: ???
+# Italics Corrections - Measures how slanted a glyph is, and how much the top part protrudes to the right. Can:
+  - Use to add to horizontal advance of last character if followed by vert glyph.
+  - Positioning limits on an operator.  Horizontal position of upper limit is moved to right by 1/2 of the italics correction.
+  - Position superscripts/subscripts.
+    
+# Attachments - Horizontal positions for math accents.
+  - Offset of accent (w/r to advance width)
+  
+# Extended Shape - Extenable glyphs.
+  - True or false, if extendable. Used for script positioning.
+  
+# Kerning - See notes written in ReX
+
+# Variants - Given a default glyph, and a desired width/height, find a variant shape glyph (or construct one by pasting several together) that has the required measurement.
+  - Variant types
+    - Predrawn variants of different sizes
+    - Extendable peices if it's bigger than the predrawn
+    
+  Variants: [ (GlyphID, Variant) ]
+  Assembly: [ 
+    Italics Correction (depends on height),
+    Parts: [ GlyphParts ]
+  ]
+  
+  GlyphParts: [
+    GlyphId:
+    StartConnectorLength: Advance of the straightbar material at start
+    EndConnectorLength: Advance of striaght bar material at end of glyph
+    FullAdvance: Full advance of glyph
+    Flags:  0x0001 - Can be skipped or repeated
+  ]
+  
