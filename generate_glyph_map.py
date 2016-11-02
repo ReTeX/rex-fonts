@@ -1,8 +1,12 @@
 from fontTools.ttLib import TTFont
+from fontTools.pens.boundsPen import BoundsPen
 import sys
 
 if len(sys.argv) != 3:
-    print("usage: make_metrics.py in-font.otf out-font.otf")
+    print("usage:   generate_glyph_map.py <FONT> <OUTPUT SVG>")
+    print("example: make_metrics.py font.otf font-table.svg\n")
+    print("This script will create a single svg with all the symbols with"
+          " their corresponding bounding boxes, and advance widths")
     sys.exit(1)
 
 # This snippet will list all glyphs that are not reachable from the cmap

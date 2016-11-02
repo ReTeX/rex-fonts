@@ -3,12 +3,26 @@
 
  [ GlyphId ] -> [
     unicode: u32,
-    BoundingBox: (x_min, y_min, x_max, y_max),
-    advance: u16
-    left_side_bearing: i16
-    italics_correction: i16
+    BoundingBox: (x_min, y_min, x_max, y_max), ??
+    advance: u16,
+    left_side_bearing: i16,
+    italics_correction: i16,
     attachment: i16,
     ExtendedShape: bool ] # Array?
+    
+  Variants: [ (GlyphID, Variant) ]
+  Assembly: [ 
+    Italics Correction (depends on height),
+    Parts: [ GlyphParts ]
+  ]
+  
+  GlyphParts: [
+    GlyphId: 
+    StartConnectorLength: Advance of the straightbar material at start
+    EndConnectorLength: Advance of striaght bar material at end of glyph
+    FullAdvance: Full advance of glyph
+    Flags:  0x0001 - Can be skipped or repeated
+  ]
 
 # Italics Corrections - Measures how slanted a glyph is, and how much the top part protrudes to the right. Can:
   - Use to add to horizontal advance of last character if followed by vert glyph.
@@ -28,17 +42,14 @@
     - Predrawn variants of different sizes
     - Extendable peices if it's bigger than the predrawn
     
-  Variants: [ (GlyphID, Variant) ]
-  Assembly: [ 
-    Italics Correction (depends on height),
-    Parts: [ GlyphParts ]
-  ]
-  
-  GlyphParts: [
-    GlyphId:
-    StartConnectorLength: Advance of the straightbar material at start
-    EndConnectorLength: Advance of striaght bar material at end of glyph
-    FullAdvance: Full advance of glyph
-    Flags:  0x0001 - Can be skipped or repeated
-  ]
-  
+
+# Custom font information
+# We placed the glyphs that aren't avialable from the cmap via unicode into
+# a Private Use Areas.  The Private Use Areas are defined by:
+#   1. U+E000-U+F8FF
+#   2. U+F0000-U+FFFFD
+#   3. U+100000-U+10FFFD
+
+# We will place our needed symbols starting at U+E700
+
+
