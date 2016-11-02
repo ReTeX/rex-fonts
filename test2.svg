@@ -1,0 +1,48 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="80ex" height="500ex" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      @font-face {
+        font-family: rex;
+        src: url('dist/rex-xits.otf');
+      }
+    </style>
+  </defs>
+  <g font-family="rex">
+<text x="1.9844444444444445ex" y="3ex">d</text>
+<rect x="2.0444444444444443ex" y="1.4822222222222223ex" width="1.031111111111111ex" height="1.5399999999999998ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="7.056666666666667ex" y="3ex">e</text>
+<rect x="7.112222222222222ex" y="1.9777777777777779ex" width="0.8866666666666666ex" height="1.0444444444444443ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="12.096666666666666ex" y="3ex">f</text>
+<rect x="12.14111111111111ex" y="1.4822222222222223ex" width="0.8066666666666668ex" height="1.5177777777777777ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="17.00888888888889ex" y="3ex">g</text>
+<rect x="17.07111111111111ex" y="1.9777777777777779ex" width="0.9822222222222223ex" height="1.5066666666666666ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="21.968888888888888ex" y="3ex">h</text>
+<rect x="21.988888888888887ex" y="1.4822222222222223ex" width="1.0622222222222222ex" height="1.5177777777777777ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="27.236666666666668ex" y="3ex">i</text>
+<rect x="27.272222222222222ex" y="1.4822222222222223ex" width="0.5266666666666666ex" height="1.5177777777777777ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="32.20666666666666ex" y="3ex">j</text>
+<rect x="32.051111111111105ex" y="1.4822222222222223ex" width="0.5866666666666667ex" height="2.002222222222222ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="36.946666666666665ex" y="3ex">k</text>
+<rect x="36.96222222222222ex" y="1.4822222222222223ex" width="1.1066666666666667ex" height="1.5177777777777777ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="42.23555555555556ex" y="3ex">l</text>
+<rect x="42.27777777777778ex" y="1.4822222222222223ex" width="0.5288888888888889ex" height="1.5177777777777777ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="46.656666666666666ex" y="3ex">m</text>
+<rect x="46.69222222222222ex" y="1.9777777777777779ex" width="1.6866666666666668ex" height="1.0222222222222221ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="51.97888888888889ex" y="3ex">n</text>
+<rect x="52.01444444444444ex" y="1.9777777777777779ex" width="1.0422222222222222ex" height="1.0222222222222221ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="57.01ex" y="3ex">o</text>
+<rect x="57.074444444444445ex" y="1.9777777777777779ex" width="0.9800000000000001ex" height="1.0444444444444443ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="61.983333333333334ex" y="3ex">p</text>
+<rect x="61.99444444444445ex" y="1.9777777777777779ex" width="1.0333333333333334ex" height="1.5044444444444443ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="66.98444444444445ex" y="3ex">q</text>
+<rect x="67.03777777777778ex" y="1.9777777777777779ex" width="1.0311111111111113ex" height="1.5044444444444443ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="72.13333333333334ex" y="3ex">r</text>
+<rect x="72.14444444444445ex" y="1.9777777777777779ex" width="0.7333333333333334ex" height="1.0222222222222221ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="77.17ex" y="3ex">s</text>
+<rect x="77.28333333333333ex" y="1.98ex" width="0.66ex" height="1.0422222222222222ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+<text x="82.20444444444445ex" y="3ex">t</text>
+<rect x="82.23333333333333ex" y="1.7133333333333334ex" width="0.5911111111111111ex" height="1.3088888888888888ex" fill="none" stroke="blue" stroke-width="0.2px"/>
+</g></svg>
