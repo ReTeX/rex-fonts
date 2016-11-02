@@ -1,6 +1,9 @@
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
+
+from collections import OrderedDict
 import sys
+import cgi
 
 if len(sys.argv) != 3:
     print("usage:   generate_glyph_map.py <FONT> <OUTPUT SVG>")
@@ -16,30 +19,34 @@ glyphset = font.getGlyphSet()
 
 # Find all unique glyphs by unicode
 cmaps  = font['cmap'].tables
-glyphs = {}
+glyphs = OrderedDict([])
 for cmap in cmaps:
     for key, value in cmap.cmap.items():
         if key not in glyphs:
             glyphs[key] = value
 
-header="""\
+pre_header="""\
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="80ex" height="500ex" xmlns="http://www.w3.org/2000/svg">
+<svg width="800" height="{}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style type="text/css">
-      @font-face {
+      @font-face {{
         font-family: rex;
-        src: url('dist/rex-xits.otf');
-      }
+        font-size: 16px;
+        src: url('out/rex-xits.otf');
+      }}
     </style>
   </defs>
   <g font-family="rex">
 """
 
-rect_template  = '<rect x="{}ex" y="{}ex" width="{}ex" height="{}ex" fill="none" stroke="blue" stroke-width="0.2px"/>\n'
-glyph_template = '<text x="{}ex" y="{}ex">{}</text>\n'    
+header=""
+
+g_template     = '<g transform="translate({},{})">'
+rect_template  = '<rect x="{}" y="{}" width="{}" height="{}" fill="none" stroke="blue" stroke-width="0.2"/>\n'
+glyph_template = '<text>{}</text>\n'
 
 # Get the bounding box
 bbox_pen = BoundsPen(None)
@@ -50,32 +57,55 @@ def get_bbox(glyph):
     (xmin, ymin, xmax, ymax) = bbox_pen.bounds
     bbox_pen.bounds = None
     bbox_pen._start = None
-    return (xmin/450, ymin/450, xmax/450, ymax/450)
+    return (xmin * 3/180, ymin * 3/180, xmax * 3/180, ymax * 3/180)
 
 # Draw glyphs
-y  = 3
+padding = 16
+y  = 16
 lh = 0
+count = 1
 
+def draw_glyphs(glyph_set):
+    global header
+    global line_glyphs
+    for idx in range(len(glyph_set)):
+        code, (xmin, ymin, xmax, ymax) = line_glyphs[idx]
+        header += g_template.format(25*idx + 12.5 - (xmax-xmin)/2, y + lh)
+        header += glyph_template.format(cgi.escape(chr(code)))
+        header += rect_template.format(xmin, -ymax, xmax-xmin, ymax-ymin)
+        header += '</g>'
 
-count = 0
+# buffer for line glyphs
+line_glyphs = []
 
 for code, name in glyphs.items():
-    if code < 100: continue
-    if count > 16: break
+    if code < 32: continue
+    
+    # Completed a line
+    if count%33 == 0:
+        draw_glyphs(line_glyphs)
+
+        line_glyphs = []
+        y += lh + padding
+        lh = 0
+        count += 1
+        
     bounds = get_bbox(glyphset.get(name))
-    if bounds == None: continue
+    if bounds == None:
+        print("No bounds for 0x{:X} aka {}".format(code, name))
+        continue
+
     (xmin, ymin, xmax, ymax) = bounds
-    header += glyph_template.format(
-        5*count + 2.5 - (xmax-xmin)/2, 
-        y, 
-        chr(code))
-    header += rect_template.format(
-        5*count + 2.5 - (xmax-xmin)/2 + xmin, 
-        y - ymax, 
-        xmax-xmin, 
-        ymax-ymin)
+    lh = max(lh, ymax)
     count += 1
+    
+    line_glyphs.append( (code, bounds) )
+
+if len(line_glyphs) > 0:
+    draw_glyphs(line_glyphs)
 
 header += "</g></svg>"
+header = pre_header.format(y + lh + 16) + header
+
 with open(out_font, 'w') as f:
     f.write(header)
