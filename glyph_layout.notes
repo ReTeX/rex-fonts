@@ -24,6 +24,18 @@
     Flags:  0x0001 - Can be skipped or repeated
   ]
 
+Steps for constructing the metrics:
+
+  - Read the CMAP table get
+    Unicode -> { GlyphId, GlyphName }
+
+  - Read the math constants table.
+    
+  - Read the unicode-math.dtx file, get the mapping:
+    Command -> { AtomType, Unicode }
+   
+  
+
 # Italics Corrections - Measures how slanted a glyph is, and how much the top part protrudes to the right. Can:
   - Use to add to horizontal advance of last character if followed by vert glyph.
   - Positioning limits on an operator.  Horizontal position of upper limit is moved to right by 1/2 of the italics correction.
@@ -51,5 +63,9 @@
 #   3. U+100000-U+10FFFD
 
 # We will place our needed symbols starting at U+E700
+
+
+
+
 
 
