@@ -1,15 +1,20 @@
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
+
+import os
 import sys
 from collections import OrderedDict
 
-if len(sys.argv) != 3:
-    print("usage: glyph_metrics.py font.otf metrics.rs")
+if len(sys.argv) != 2:
+    print("usage: make-glyphs.py font.otf")
+    print("\nThis file will read font.otf, extract the relavent infomration " +
+          "needed to create a Glyph structure in rust.  This will save the file "
+          "as out/font/glyphs.rs.  This file assumes the font has a rex- prefix.")
     sys.exit(1)
 
 # This snippet will list all glyphs that are not reachable from the cmap
 font_file  = sys.argv[1]
-rust_file  = sys.argv[2]
+file_out = "out/" + os.path.splitext(os.path.basename(font_file))[0][4:] + "/glyphs.rs"
 
 font     = TTFont(font_file)
 glyphset = font.getGlyphSet()
@@ -40,9 +45,9 @@ for code in glyphs:
     glyph = glyphset.get(glyphs[code]["name"])
     glyph.draw(pen)
     if pen.bounds == None:
-        print("Unable to get bounds for 0x{:X} ({}).  Deleting from glyphs."
-              .format(code, glyphs[code]["name"]))
-        to_delete.append(code)
+        #print("Unable to get bounds for 0x{:X} ({}).  Deleting from glyphs."
+        #      .format(code, glyphs[code]["name"]))
+        #to_delete.append(code)
         continue
  
     (xm, ym, xM, yM) = pen.bounds
@@ -84,8 +89,9 @@ for key, value in hor_metrics.items():
 header = """
 // Automatically generated... blah blah blah, you know the deal.
 
-static glyph_metrics = [
-"""
+#[allow(dead_code)]
+static GLYPHS: [Glyph; {}] = [
+""".format(len(glyphs))
 
 template = "  Glyph {{ unicode: {}, bbox: BBox({},{},{},{}), advance: {}, lsb: {}, italics: {}, attachment: {} }},\n"
 
@@ -102,7 +108,7 @@ for code in glyphs:
     header += template.format(
         code, xm, ym, xM, yM, advance, lsb, italics, attachment)
 
-header += "]\n"
+header += "];\n"
 
-with open(rust_file, 'w') as f:
+with open(file_out, 'w') as f:
     f.write(header)

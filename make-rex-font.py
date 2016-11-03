@@ -1,13 +1,19 @@
 from fontTools.ttLib import TTFont
+
+import os
 import sys
 
-if len(sys.argv) != 3:
-    print("usage: make_metrics.py in-font.otf out-font.otf")
+if len(sys.argv) != 2:
+    print("usage: make-rex-font.py font.otf")
+    print("\nThis script will read font.otf, find all glyphs that are " +
+          "not accessible by unicode as determined by the CMAP, and will place " +
+          "these glyphs into a Private Use Region, starting at 0xE700.  This script " +
+          "will then save the new font as out/rex-font.otf")
     sys.exit(1)
 
 # This snippet will list all glyphs that are not reachable from the cmap
-in_font  = sys.argv[1]
-out_font = sys.argv[2]
+font_file = sys.argv[1]
+out_file  = "out/rex-" + os.path.basename(font_file)
 
 font   = TTFont(in_font)
 cmaps  = font['cmap'].tables
