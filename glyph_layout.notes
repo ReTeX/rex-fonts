@@ -26,15 +26,19 @@
 
 Steps for constructing the metrics:
 
-  - Read the CMAP table get
-    Unicode -> { GlyphId, GlyphName }
-
-  - Read the math constants table.
+  + Read the CMAP table get
+    Unicode -> { name: GlyphName, id: UniqueGlyphId }
     
   - Read the unicode-math.dtx file, get the mapping:
-    Command -> { AtomType, Unicode }
-   
-  
+    Command -> { AtomType, UniqueGlyphId }
+    Filter out all Commands with Unicode note found in CMAP
+
+  + Calculate BoundingBox for each Glyph, { bbox: (mx, my, Mx, My) }
+  ? Read Advance, LSB for each Glyph, { advance: #, LSB: # }
+  + Read Attachments for each Glyph, { attachment: # }
+  + Read Italics Correction for each Glyph, { italics_correction: # }
+  - Assemble GlyphId -> Array.
+
 
 # Italics Corrections - Measures how slanted a glyph is, and how much the top part protrudes to the right. Can:
   - Use to add to horizontal advance of last character if followed by vert glyph.
