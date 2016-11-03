@@ -19,11 +19,13 @@ glyphset = font.getGlyphSet()
 
 # Find all unique glyphs by unicode
 cmaps  = font['cmap'].tables
-glyphs = OrderedDict([])
+glyphs = {}
 for cmap in cmaps:
     for key, value in cmap.cmap.items():
         if key not in glyphs:
             glyphs[key] = value
+            
+glyphs = OrderedDict(sorted(glyphs.items(), key=lambda x: x[0]))
 
 pre_header="""\
 <?xml version="1.0" standalone="no"?>
@@ -35,7 +37,7 @@ pre_header="""\
       @font-face {{
         font-family: rex;
         font-size: 16px;
-        src: url('out/rex-xits.otf');
+        src: url('{}');
       }}
     </style>
   </defs>
@@ -48,16 +50,25 @@ g_template     = '<g transform="translate({},{})">'
 rect_template  = '<rect x="{}" y="{}" width="{}" height="{}" fill="none" stroke="blue" stroke-width="0.2"/>\n'
 glyph_template = '<text>{}</text>\n'
 
-# Get the bounding box
+# Get the height of x, used for scaling
+# For now, use that 1ex = 8px, for some reason tests worked that way
 bbox_pen = BoundsPen(None)
+char_x   = glyphset.get('x')
+char_x.draw(bbox_pen)
+x_height = bbox_pen.bounds[2] - bbox_pen.bounds[0]
+scale = 8/x_height
+
+# Get the bounding box
+bbox_pen = BoundsPen(None, ignoreSinglePoints=True)
 def get_bbox(glyph):
+    global scale
     glyph.draw(bbox_pen)
     if bbox_pen.bounds == None:
         return None
     (xmin, ymin, xmax, ymax) = bbox_pen.bounds
     bbox_pen.bounds = None
     bbox_pen._start = None
-    return (xmin * 3/180, ymin * 3/180, xmax * 3/180, ymax * 3/180)
+    return (xmin * scale, ymin * scale, xmax * scale, ymax * scale)
 
 # Draw glyphs
 padding = 16
@@ -105,7 +116,7 @@ if len(line_glyphs) > 0:
     draw_glyphs(line_glyphs)
 
 header += "</g></svg>"
-header = pre_header.format(y + lh + 16) + header
+header = pre_header.format(y + lh + 16, in_font) + header
 
 with open(out_font, 'w') as f:
     f.write(header)
