@@ -94,8 +94,8 @@ for idx, glyph in enumerate(italics_coverage):
 for name, values in font['hmtx'].metrics.items():
     advance = values[0]
     lsb     = values[1]
-    glyphs[code_lookup[key]]["advance"] = advance
-    glyphs[code_lookup[key]]["lsb"]     = lsb
+    glyphs[code_lookup[name]]["advance"] = advance
+    glyphs[code_lookup[name]]["lsb"]     = lsb
 
 ###
 # Build rust objects from the collected metrics
@@ -111,7 +111,6 @@ pub static GLYPHS: [Glyph; {}] = [
 
 template = "  Glyph {{ unicode: {}, bbox: BBox({},{},{},{}), advance: {}, lsb: {}, italics: {}, attachment: {} }},\n"
 
-print(glyphs)
 for code in glyphs:
     xm = glyphs[code].get("xm", 0)
     ym = glyphs[code].get("ym", 0)
