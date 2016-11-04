@@ -21,19 +21,19 @@ impl IsAtom for char {
                 atom_type: AtomType::Alpha,
             }),
             c @ 'Α'...'Ρ' => Some(Symbol {
-                id: c + -254 as usize,
+                id: c + -518 as usize,
                 atom_type: AtomType::Alpha,
             }),
             c @ 'Σ'...'Ω' => Some(Symbol {
-                id: c + -255 as usize,
+                id: c + -519 as usize,
                 atom_type: AtomType::Alpha,
             }),
             c @ 'α'...'ρ' => Some(Symbol {
-                id: c + -255 as usize,
+                id: c + -526 as usize,
                 atom_type: AtomType::Alpha,
             }),
             c @ 'σ'...'ω' => Some(Symbol {
-                id: c + -255 as usize,
+                id: c + -526 as usize,
                 atom_type: AtomType::Alpha,
             }),
             c @ '*' => Some(Symbol {

@@ -15,7 +15,7 @@ if len(sys.argv) != 2:
 font_file = sys.argv[1]
 out_file  = "out/rex-" + os.path.basename(font_file)
 
-font   = TTFont(in_font)
+font   = TTFont(font_file)
 cmaps  = font['cmap'].tables
 glyphs = font.getGlyphNames()
 
@@ -50,5 +50,5 @@ for glyph in diff:
             table.cmap[start] = glyph
     start += 1
 
-print("\nFinished.  Added {} glyphs to CMAPs in ranges {:X} to {:X}".format(start - base, base, start))
-font.save(out_font)
+print("Finished.  Added {} glyphs to CMAPs in ranges {:X} to {:X}".format(start - base, base, start))
+font.save(out_file)
