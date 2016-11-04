@@ -84,18 +84,26 @@ italics_table    = math.MathGlyphInfo.MathItalicsCorrectionInfo
 italics_coverage = italics_table.Coverage.glyphs
 for idx, glyph in enumerate(italics_coverage):
     value = italics_table.ItalicsCorrection[idx].Value
-    glyphs[code_lookup[glyph]]["italics_correction"] = value
+    glyphs[code_lookup[glyph]]["italics"] = value
 
 ###
 # Calculate the advance and left side bearing
 #
 
 # TODO: Get the advacnce/lsb from the glyphs found in extended etc..
-for name, values in font['hmtx'].metrics.items():
+metrics = font['hmtx'].metrics
+for code, name in codes:
+    values = metrics.get(name, None)
+    if values == None: continue
     advance = values[0]
     lsb     = values[1]
-    glyphs[code_lookup[name]]["advance"] = advance
-    glyphs[code_lookup[name]]["lsb"]     = lsb
+    glyphs[code]["advance"] = advance
+    glyphs[code]["lsb"]     = lsb
+#for name, values in font['hmtx'].metrics.items():
+#    advance = values[0]
+#    lsb     = values[1]
+#    glyphs[code_lookup[name]]["advance"] = advance
+#    glyphs[code_lookup[name]]["lsb"]     = lsb
 
 ###
 # Build rust objects from the collected metrics
@@ -117,7 +125,7 @@ for code in glyphs:
     xM = glyphs[code].get("xM", 0)
     yM = glyphs[code].get("yM", 0)
     attachment = glyphs[code].get("attachment", 0)
-    italics = glyphs[code].get("italics_correction", 0)
+    italics = glyphs[code].get("italics", 0)
     advance = glyphs[code].get("advance", 0)
     lsb = glyphs[code].get("lsb", 0)
     
