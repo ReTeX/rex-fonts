@@ -2,7 +2,7 @@
 // 
 // Font File: master/modern.otf
 // Font Nmae: b'LatinModernMath-Regular'
-use metrics::Constants;
+use font::Constants;
 
 #[allow(dead_code)]
 pub static CONSTANTS: Constants = Constants {
