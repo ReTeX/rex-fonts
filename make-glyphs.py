@@ -97,6 +97,9 @@ for code, name in codes:
     if values == None: continue
     advance = values[0]
     lsb     = values[1]
+    if glyphs[code].get("advance", None) != None:
+        print("Code collision!", code, name)
+        continue
     glyphs[code]["advance"] = advance
     glyphs[code]["lsb"]     = lsb
 #for name, values in font['hmtx'].metrics.items():
