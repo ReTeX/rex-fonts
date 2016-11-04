@@ -56,7 +56,7 @@ header = """\
 #![allow(dead_code)]
 use phf;
 use parser::nodes::AtomType;
-use symbols::Symbol;
+use font::Symbol;
 
 pub static SYMBOLS: phf::Map<&'static str, Symbol> = phf_map! {
 """
@@ -240,25 +240,26 @@ with open(file_out, 'w', newline='\n') as f:
 header="""\
 // Do not modify.  Automatically generated.
 use parser::nodes::AtomType;
+use font::{Style, Symbol};
 
 pub trait IsAtom {
-    fn atom_type(&self, FontMode) -> Option<Symbol>;
+    fn atom_type(&self, Style) -> Option<Symbol>;
 }
 
 impl IsAtom for char {
-    fn atom_type(&self, mode: FontMode) -> Option<Symbol> {
+    fn atom_type(&self, mode: Style) -> Option<Symbol> {
         match *self {
 """
 
 range_template ="""\
             c @ '{}'...'{}' => Some(Symbol {{
-                id: c + {} as usize,
+                id: (c as i32 + {}) as u16,
                 atom_type: AtomType::{},
             }}),\n"""
 
 single_template="""\
             c @ '{}' => Some(Symbol {{
-                id: {},
+                id: {} as u16,
                 atom_type: AtomType::{},
             }}),\n"""
 

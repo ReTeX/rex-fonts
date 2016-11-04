@@ -88,9 +88,10 @@ for key, value in hor_metrics.items():
 # Render rust code
 header = """
 // Automatically generated... blah blah blah, you know the deal.
+use font::{{ Glyph, BBox }};
 
 #[allow(dead_code)]
-static GLYPHS: [Glyph; {}] = [
+pub static GLYPHS: [Glyph; {}] = [
 """.format(len(glyphs))
 
 template = "  Glyph {{ unicode: {}, bbox: BBox({},{},{},{}), advance: {}, lsb: {}, italics: {}, attachment: {} }},\n"

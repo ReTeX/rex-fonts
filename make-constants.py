@@ -21,7 +21,7 @@ header = '''\
 // 
 // Font File: {}
 // Font Nmae: {}
-use metrics::Constants;
+use font::Constants;
 
 #[allow(dead_code)]
 pub static CONSTANTS: Constants = Constants {{
