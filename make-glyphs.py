@@ -30,7 +30,7 @@ for cmap in cmaps:
 
 # This provides Name -> Unicode mapping
 code_lookup = {}
-for code, name in codes:
+for code, name in codes.items():
     code_lookup[name] = code
 
 # This provides the UNICODE -> { Name, GeneratedID } map.
