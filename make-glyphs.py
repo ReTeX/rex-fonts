@@ -24,21 +24,18 @@ glyphset = font.getGlyphSet()
 cmaps    = font['cmap'].tables
 
 # Find all unique GlyphNames that is reachable from a cmap
-codes = []
+codes = {}
 for cmap in cmaps:
-    for code, name in cmap.cmap.items():
-        if code not in codes:
-            codes.append((code, name))
+    codes.update(cmap.cmap)
 
 # This provides Name -> Unicode mapping
-codes = sorted(codes)
 code_lookup = {}
 for code, name in codes:
     code_lookup[name] = code
 
 # This provides the UNICODE -> { Name, GeneratedID } map.
 glyphs = OrderedDict()
-for idx, (code, name) in enumerate(codes):
+for idx, (code, name) in enumerate(codes.items()):
     glyphs[code] = { "name": name, "id": idx }
 
 ###
@@ -46,7 +43,7 @@ for idx, (code, name) in enumerate(codes):
 #
 
 pen = BoundsPen(None)
-for code, _ in codes:
+for code, _ in codes.items():
     glyph = glyphset.get(glyphs[code]["name"])
     glyph.draw(pen)
     if pen.bounds == None:
@@ -92,21 +89,11 @@ for idx, glyph in enumerate(italics_coverage):
 
 # TODO: Get the advacnce/lsb from the glyphs found in extended etc..
 metrics = font['hmtx'].metrics
-for code, name in codes:
-    values = metrics.get(name, None)
-    if values == None: continue
+for name, values in font['hmtx'].metrics.items():
     advance = values[0]
     lsb     = values[1]
-    if glyphs[code].get("advance", None) != None:
-        print("Code collision!", code, name)
-        continue
-    glyphs[code]["advance"] = advance
-    glyphs[code]["lsb"]     = lsb
-#for name, values in font['hmtx'].metrics.items():
-#    advance = values[0]
-#    lsb     = values[1]
-#    glyphs[code_lookup[name]]["advance"] = advance
-#    glyphs[code_lookup[name]]["lsb"]     = lsb
+    glyphs[code_lookup[name]]["advance"] = advance
+    glyphs[code_lookup[name]]["lsb"]     = lsb
 
 ###
 # Build rust objects from the collected metrics
