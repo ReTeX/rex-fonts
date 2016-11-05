@@ -18,12 +18,14 @@ font = TTFont(in_font)
 glyphset = font.getGlyphSet()
 
 # Find all unique glyphs by unicode
-cmaps  = font['cmap'].tables
-glyphs = {}
-for cmap in cmaps:
-    for key, value in cmap.cmap.items():
-        if key not in glyphs:
-            glyphs[key] = value
+codes = {}
+for cmap in font['cmap'].tables:
+    codes.update(cmap.cmap)
+
+# This provides Name -> Unicode mapping
+code_lookup = {}
+for code, name in codes.items():
+    code_lookup[name] = code
             
 glyphs = OrderedDict(sorted(glyphs.items(), key=lambda x: x[0]))
 
