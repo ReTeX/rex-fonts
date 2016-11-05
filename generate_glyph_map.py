@@ -36,27 +36,29 @@ pre_header="""\
     <style type="text/css">
       @font-face {{
         font-family: rex;
-        font-size: 16px;
         src: url('{}');
       }}
     </style>
   </defs>
-  <g font-family="rex">
+  <g font-family="rex" font-size="16px">
 """
 
 header=""
 
 g_template     = '<g transform="translate({},{})">'
-rect_template  = '<rect x="{}" y="{}" width="{}" height="{}" fill="none" stroke="blue" stroke-width="0.2"/>\n'
+rect_template  = '<rect x="{:.2f}em" y="{:.2f}em" width="{:.2f}em" height="{:.2f}em" fill="none" stroke="blue" stroke-width="0.2"/>\n'
+adv_template   = '<rect x="{:.2f}em" y="{:.2f}em" width="{:.2f}em" height="{:.2f}em" fill="none" stroke="red" stroke-width="0.2"/>\n'
 glyph_template = '<text>{}</text>\n'
 
 # Get the height of x, used for scaling
 # For now, use that 1ex = 8px, for some reason tests worked that way
-bbox_pen = BoundsPen(None)
-char_x   = glyphset.get('x')
-char_x.draw(bbox_pen)
-x_height = bbox_pen.bounds[2] - bbox_pen.bounds[0]
-scale = 8/x_height
+#bbox_pen = BoundsPen(None)
+#char_x   = glyphset.get('M')
+#char_x.draw(bbox_pen)
+#x_height = bbox_pen.bounds[3] - bbox_pen.bounds[1]
+#scale = 16/x_height
+unitsPerEm = 1000
+scale = 1/unitsPerEm
 
 # Get the bounding box
 bbox_pen = BoundsPen(None, ignoreSinglePoints=True)
@@ -74,14 +76,18 @@ def get_bbox(glyph):
 padding = 16
 y  = 16
 lh = 0
+ld = 0
 count = 1
 
 def draw_glyphs(glyph_set):
     global header
     global line_glyphs
-    for idx in range(len(glyph_set)):
+    global glyphset
+    for idx, glyph in enumerate(glyph_set):
         code, (xmin, ymin, xmax, ymax) = line_glyphs[idx]
-        header += g_template.format(25*idx + 12.5 - (xmax-xmin)/2, y + lh)
+        width = max(font['hmtx'].metrics.get(glyphs[code], 0)[0] * 1/1000, 0)
+        header += g_template.format(int(25*idx + 12.5 - (xmax-xmin)/2), int(y + lh))
+        header += adv_template.format(0, -ymax, width, ymax-ymin)
         header += glyph_template.format(cgi.escape(chr(code)))
         header += rect_template.format(xmin, -ymax, xmax-xmin, ymax-ymin)
         header += '</g>'
@@ -97,8 +103,9 @@ for code, name in glyphs.items():
         draw_glyphs(line_glyphs)
 
         line_glyphs = []
-        y += lh + padding
+        y += lh - ld + padding
         lh = 0
+        ld = 0
         count += 1
         
     bounds = get_bbox(glyphset.get(name))
@@ -107,7 +114,8 @@ for code, name in glyphs.items():
         continue
 
     (xmin, ymin, xmax, ymax) = bounds
-    lh = max(lh, ymax)
+    lh = max(lh, ymax*16)
+    ld = min(ld, ymin*16)
     count += 1
     
     line_glyphs.append( (code, bounds) )
