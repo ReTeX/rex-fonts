@@ -25,20 +25,14 @@ file_out = "out/" + os.path.splitext(os.path.basename(font_file))[0][4:] + "/sym
 
 font     = TTFont(font_file)
 glyphset = font.getGlyphSet()
-cmaps    = font['cmap'].tables
 
 # Find all unique GlyphNames that is reachable from a cmap
-codes = []
-for cmap in cmaps:
-    for code in cmap.cmap:
-        if code not in codes:
-            codes.append(code)
+names = {}
+for cmap in font['cmap'].tables:
+    names.update(cmap.cmap)
 
-codes = sorted(codes)
-glyphid = {}
-
-for idx, code in enumerate(codes):
-    glyphid[code] = idx
+# Unicode -> Idx mapping
+ids = { code: idx for idx, code in enumerate(sorted(names.keys())) }
 
 ###
 # Parse unicode-math-table.tex
@@ -171,11 +165,11 @@ with open('unicode-math-table.tex', 'r') as f:
         cursor += 2  # Skip next `}{` sequence
         desc = line[cursor:-3]
 
-        if glyphid.get(icode, None) == None:
+        if ids.get(icode, None) == None:
             print("Unable to find 0x{:X} -- {}.".format(int(code, 16), desc))
             continue
 
-        symbols.append([cmd, glyphid[icode], convert_type[atom], code, desc])
+        symbols.append([cmd, ids[icode], convert_type[atom], code, desc])
 
 # Write '.../syc/symbols.rs'
 with open(file_out, 'w', newline='\n') as f:
@@ -191,10 +185,10 @@ with open(file_out, 'w', newline='\n') as f:
     f.write("    // Additional commands from TeX\n")
     for name, (code, ty) in additional_symbols:
         icode = int(code, 16)
-        if glyphid.get(icode, None) == None:
+        if ids.get(icode, None) == None:
             print("Missing greek glyph: {}, {}".format(code, name))
             continue
-        f.write(template.format(name, glyphid[icode], ty, code, ""))
+        f.write(template.format(name, ids[icode], ty, code, ""))
     f.write('};')
 
 

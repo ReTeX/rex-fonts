@@ -52,13 +52,6 @@ rect_template  = '<rect x="{:.2f}em" y="{:.2f}em" width="{:.2f}em" height="{:.2f
 adv_template   = '<rect x="{:.2f}em" y="{:.2f}em" width="{:.2f}em" height="{:.2f}em" fill="none" stroke="red" stroke-width="0.2"/>\n'
 glyph_template = '<text>{}</text>\n'
 
-# Get the height of x, used for scaling
-# For now, use that 1ex = 8px, for some reason tests worked that way
-#bbox_pen = BoundsPen(None)
-#char_x   = glyphset.get('M')
-#char_x.draw(bbox_pen)
-#x_height = bbox_pen.bounds[3] - bbox_pen.bounds[1]
-#scale = 16/x_height
 unitsPerEm = 1000
 scale = 1/unitsPerEm
 

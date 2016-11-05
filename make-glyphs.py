@@ -1,9 +1,9 @@
-from fontTools.ttLib import TTFont
-from fontTools.pens.boundsPen import BoundsPen
-
 import os
 import sys
 from collections import OrderedDict
+
+from fontTools.ttLib import TTFont
+from fontTools.pens.boundsPen import BoundsPen
 
 if len(sys.argv) != 2:
     print("usage: make-glyphs.py font.otf")
@@ -16,10 +16,6 @@ font_file  = sys.argv[1]
 file_out = "out/" + os.path.splitext(os.path.basename(font_file))[0][4:] + "/glyphs.rs"
 font     = TTFont(font_file)
 glyphset = font.getGlyphSet()
-
-###
-# Obtain UNICODE -> { Name, GeneratedID } map
-#
 
 # This provides Unicode -> Name mapping
 names = {}
