@@ -31,8 +31,19 @@ names = {}
 for cmap in font['cmap'].tables:
     names.update(cmap.cmap)
 
+# Delete name collisions, to align IDs properly
+unique_names = {}
+seen = set()
+for code, name in names.items():
+    if name in seen:
+        continue
+    seen.add(name)
+    unique_names[code] = name
+
 # Unicode -> Idx mapping
-ids = { code: idx for idx, code in enumerate(sorted(names.keys())) }
+ids = OrderedDict([(code, idx) 
+        for idx, code in enumerate(sorted(unique_names.keys()))])
+
 
 ###
 # Parse unicode-math-table.tex
@@ -293,10 +304,10 @@ singles = [
 
 for start, end, atom in ranges:
     header += range_template.format(
-        start, end, glyphid[ord(start)] - ord(start), atom)
+        start, end, ids[ord(start)] - ord(start), atom)
     
 for c, atom in singles:
-    header += single_template.format(c, glyphid[ord(c)], atom)
+    header += single_template.format(c, ids[ord(c)], atom)
 
 header += """\
             _ => None,
