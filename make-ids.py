@@ -15,55 +15,72 @@
 #   1. Direct input (ie: inputting unicode characters 0x3B1 for greek \Alpha)
 #   2. Impacted by font selection algorithm [ie: \Alpha..\Omega, \alpha..\omega, etc.]
 
-Styles = {
-    "normal":   "Normal",          # the default style for glyphs
-    "up":       "Upright",         # upright glyphs
-    "cal":      "Calligraphic",    # calligraphic
-    "scr":      "Script",          # script [ defaults to same as "cal" ]
-    "sf",       "Serif",           # serif
-    "frak",     "Fraktur",         # fraktur
-    "bb",       "Blackboard",      # blackboard
-    "tt",       "TeleType",        # teletype / monospace
+#Styles = {
+    #"normal":   "Normal",          # the default style for glyphs
+    #"up":       "Upright",         # upright glyphs
+    #"cal":      "Calligraphic",    # calligraphic
+    #"scr":      "Script",          # script [ defaults to same as "cal" ]
+    #"sf",       "Serif",           # serif
+    #"frak",     "Fraktur",         # fraktur
+    #"bb",       "Blackboard",      # blackboard
+    #"tt",       "TeleType",        # teletype / monospace
 
-    # Style variants, only to reduce combinatorial explosion
-    # and to keep the same style as bitflags used in rust code.
+    ## Style variants, only to reduce combinatorial explosion
+    ## and to keep the same style as bitflags used in rust code.
 
-    "bf":       "Bold",            # boldface
-    "it":       "Italic",          # italic
+    #"bf":       "Bold",            # boldface
+    #"it":       "Italic",          # italic
+#}
+
+import toml
+from fontTools.ttLib import TTFont
+
+font = TTFont('out/rex-xits.otf')
+
+with open('unicode.toml') as f:
+    tml = toml.loads(f.read())
+
+names = {}
+for cmap in font['cmap'].tables:
+    names.update(cmap.cmap)
+    
+id_list = [ ]  # unicode
+
+length = {
+    'Latin': 26,
+    'latin': 26,
+    'digits': 10,
+    'greek': 25,
+    'Greek': 24,
 }
 
-Encodings = [
-    { name: "latin", offset: 0x41, length: 26,
-      styles: [
-          
-      ]
-]
+offsets = {}
+families = [ 'Latin', 'latin', 'digits', 'Greek']
 
-Encodings = [
-    {
-        name: "latin"       # lowercase latin a..z
-        offset: 0x41,
-        length: 26,
-    },
-    {
-        name: "Latin"       # upercase latin A..Z
-        offset: 0x62,
-        length: 26,
-    },
-    {
-        name: "digits"      # Numerics 0..9
-        offset: 0x30,
-        length: 10
-    },
-    {
-        name: "greek"       # lowercase greek \alpha..\omega
-        offset: 0x3B1
-        length: 25
-    },
-    {
-        name: "Greek"       # Upercase greek \Alpha..\Omega
-        offset: 0x391
-        length: 24          
-        skip: [ 0x3A2 ]     # No uppercase Final Sigma (stigma)
-    },
-]
+# First align desired regions
+Latin = tml['Latin']
+
+for family in families:
+    cfg = tml[family]
+    for style, opts in cfg.items():
+        offset = int(opts['offset'], 16)
+        exceptions = opts.get('exceptions', {})
+        print(exceptions)
+        offsets[style] = len(id_list)
+
+        count=0
+        idx = offset
+        while count < length[family]:
+            if idx in exceptions.get('undefined', []):
+                id_list.append(35) # which is .notdef glyph? Find first?
+                idx += 1
+            elif exceptions.get(idx, None):
+                id_list.append(int(exceptions[idx],16))
+                idx += 1
+                count += 1
+            else:
+                id_list.append(idx)
+                idx += 1
+                count += 1
+            
+print(id_list, len(id_list), offsets)
