@@ -5,6 +5,8 @@ from collections import OrderedDict
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
 
+from make-ids import MathFont
+
 if len(sys.argv) != 2:
     print("usage: make-glyphs.py font.otf")
     print("\nThis file will read font.otf, extract the relavent infomration "
@@ -17,16 +19,13 @@ file_out = "out/" + os.path.splitext(os.path.basename(font_file))[0][4:] + "/gly
 font     = TTFont(font_file)
 glyphset = font.getGlyphSet()
 
-# This provides Unicode -> Name mapping
-names = {}
-for cmap in font['cmap'].tables:
-    names.update(cmap.cmap)
+mf = MathFont(font_file, "unicode.toml")
 
 # This provides and ordered Name -> Unicode mapping with every other attribute initialized
 glyphs = OrderedDict(
-    [(name, { "unicode": code, "xm": 0, "ym": 0, "xM": 0, "yM": 0, 
+    [(name, { "unicode": uni, "xm": 0, "ym": 0, "xM": 0, "yM": 0, 
              "attachment": 0, "italics": 0, "advance": 0, "lsb": 0 })
-        for code, name in sorted(names.items(), key=lambda x: x[0])]);
+        for idx, uni in sorted(mf.id2uni, key=lambda x: x[0])]);
 
 
 # Unicode -> Idx mapping
@@ -48,7 +47,7 @@ for name in glyphs:
     glyph.draw(pen)
     if pen.bounds == None:
         continue
-    
+
     (xm, ym, xM, yM) = pen.bounds
     glyphs[name]["xm"] = int(xm)
     glyphs[name]["ym"] = int(ym)

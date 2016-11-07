@@ -31,6 +31,7 @@
     #"bf":       "Bold",            # boldface
     #"it":       "Italic",          # italic
 #}
+from collections import OrderedDict
 import copy
 import toml
 from fontTools.ttLib import TTFont
@@ -44,6 +45,7 @@ class MathFont:
         'Greek': 25,
     }
     
+    id2uni = {}     # Mapping from ID -> Unicode
     names = {}      # Mapping from Unicode -> Name
     ids = []        # List of consecutive Glyph IDs 
     id_map = {}     # Mapping from Name -> ID
@@ -86,5 +88,19 @@ class MathFont:
 
         # Construct the rest of the IDs by simply placing them in order
         # First reverse the dictionary, and update
-        __names = sorted(_names.items(), key = lambda  t: t[0])
-        self.id_map.update({ name: idx for idx, (_, name) in enumerate(__names) })
+        _names = sorted(_names.items(), key = lambda  t: t[0])
+        
+        # Delete duplicate values first and update dictionary
+        for idx, (code, name) in enumerate(_names):
+            self.id_map[name] = idx
+
+        _names = OrderedDict(_names)
+        idx2name = { idx: name for name, idx in self.id_map.items() }
+        for idx in sorted(idx2name.keys()):
+            name =idx2name[idx]
+            for code, n in _names.items():
+                if n == name:
+                    self.id2uni[idx] = code
+                    
+mf = MathFont('out/rex-xits.otf', 'unicode.toml')
+print(sorted(mf.id2uni.keys()))
