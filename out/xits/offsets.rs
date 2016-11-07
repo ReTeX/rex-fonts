@@ -22,19 +22,19 @@ impl IsAtom for char {
                 atom_type: AtomType::Alpha,
             }),
             c @ 'Α'...'Ρ' => Some(Symbol {
-                id: (c as i32 + -254) as u16,
+                id: (c as i32 + -286) as u16,
                 atom_type: AtomType::Alpha,
             }),
             c @ 'Σ'...'Ω' => Some(Symbol {
-                id: (c as i32 + -255) as u16,
+                id: (c as i32 + -287) as u16,
                 atom_type: AtomType::Alpha,
             }),
             c @ 'α'...'ρ' => Some(Symbol {
-                id: (c as i32 + -255) as u16,
+                id: (c as i32 + -287) as u16,
                 atom_type: AtomType::Alpha,
             }),
             c @ 'σ'...'ω' => Some(Symbol {
-                id: (c as i32 + -255) as u16,
+                id: (c as i32 + -287) as u16,
                 atom_type: AtomType::Alpha,
             }),
             c @ '*' => Some(Symbol {

@@ -28,12 +28,22 @@ glyphs = OrderedDict(
              "attachment": 0, "italics": 0, "advance": 0, "lsb": 0 })
         for code, name in sorted(names.items(), key=lambda x: x[0])]);
 
+
+# Unicode -> Idx mapping
+ids = OrderedDict([(code, idx) 
+        for idx, code in enumerate(sorted(names.keys()))])
+
+with open('glyphs.out', 'w') as f:
+    for idx, values in enumerate(glyphs.items()):
+        f.write("{}: {}\n".format(idx, values[1]['unicode']))
+
 ###
 # Calculating the bounding box for each Glyph
 #
 
 pen = BoundsPen(None)
 for name in glyphs:
+    if name not in glyphs: continue
     glyph = glyphset.get(name)
     glyph.draw(pen)
     if pen.bounds == None:
@@ -58,6 +68,7 @@ math = font['MATH'].table
 accent_table    = math.MathGlyphInfo.MathTopAccentAttachment
 accent_coverage = accent_table.TopAccentCoverage.glyphs
 for idx, name in enumerate(accent_coverage):
+    if name not in glyphs: continue
     value = accent_table.TopAccentAttachment[idx].Value
     glyphs[name]["attachment"] = value
     
@@ -68,6 +79,7 @@ for idx, name in enumerate(accent_coverage):
 italics_table    = math.MathGlyphInfo.MathItalicsCorrectionInfo
 italics_coverage = italics_table.Coverage.glyphs
 for idx, name in enumerate(italics_coverage):
+    if name not in glyphs: continue
     value = italics_table.ItalicsCorrection[idx].Value
     glyphs[name]["italics"] = value
 
@@ -77,6 +89,7 @@ for idx, name in enumerate(italics_coverage):
 
 metrics = font['hmtx'].metrics
 for name, values in font['hmtx'].metrics.items():
+    if name not in glyphs: continue
     glyphs[name]["advance"] = values[0]
     glyphs[name]["lsb"]     = values[1]
 
@@ -101,3 +114,4 @@ for values in glyphs.values():
 header += "];\n"
 with open(file_out, 'w') as f:
     f.write(header)
+
