@@ -8,6 +8,8 @@
 # Define style regions, then place then one by one
 # So we will want to sort by encoding { digits, Latin, ... }
 
+undefined="0x29C4"
+
 # Default styles
 [normal]
 digits="up"
@@ -41,7 +43,7 @@ offset="0x1D434"
 [latin.italic]
 offset="0x1D44E"
     [latin.italic.exceptions]
-    119893="0x210E"    # h 0x1d455
+    '119893'="0x210E"    # h 0x1d455
 #     
 # [Latin.bolditalic]
 # offset="0x1D468"

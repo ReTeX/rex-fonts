@@ -31,56 +31,60 @@
     #"bf":       "Bold",            # boldface
     #"it":       "Italic",          # italic
 #}
-
+import copy
 import toml
 from fontTools.ttLib import TTFont
 
-font = TTFont('out/rex-xits.otf')
-
-with open('unicode.toml') as f:
-    tml = toml.loads(f.read())
-
-names = {}
-for cmap in font['cmap'].tables:
-    names.update(cmap.cmap)
+class MathFont:
+    LENGTH = {
+        'Latin': 26,
+        'latin': 26,
+        'digits': 10,
+        'greek': 25,
+        'Greek': 25,
+    }
     
-id_list = [ ]  # unicode
+    names = {}      # Mapping from Unicode -> Name
+    ids = []        # List of consecutive Glyph IDs 
+    id_map = {}     # Mapping from Name -> ID
+    offsets = []    # Lists of (family, style, offset) for Glyph IDs 
+    families = [    # List of recognized families
+        'Latin', 'latin', 'digits', 'Greek'
+    ]
+    
+    def __init__(self, font, config):
+        self.font = TTFont(font)
+        with open(config) as f:
+            _config = toml.loads(f.read())
+        
+        self.undefined = int(_config['undefined'], 16)
+        
+        # TODO: We should probably handle Latin better
+        for cmap in self.font['cmap'].tables:
+            self.names.update(cmap.cmap)
+        
+        # Temporary names dictionary which we will modify
+        _names = copy.deepcopy(self.names)
+        
+        # Construct the IDs table
+        for family in self.families:
+            # Sort for deterministic ID construction
+            for style, opts in sorted(_config[family].items(), key=lambda t: t[0]):
+                self.offsets.append((family, style, len(self.ids)))
+                exceptions = opts.get('exceptions', {})
+                offset = int(opts['offset'], 16)   # Starting unicode offset
+                for idx in range(offset, offset + self.LENGTH[family]):
+                    if idx in exceptions.get('undefined', []):
+                        self.ids.append(self.undefined)
+                    elif exceptions.get(str(idx), None):
+                        self.ids.append(int(exceptions[str(idx)], 16))
+                    else:
+                        self.ids.append(idx)
+                        
+                    # we no longer need this in names
+                    self.id_map[_names.pop(idx, None)] = idx
 
-length = {
-    'Latin': 26,
-    'latin': 26,
-    'digits': 10,
-    'greek': 25,
-    'Greek': 24,
-}
-
-offsets = {}
-families = [ 'Latin', 'latin', 'digits', 'Greek']
-
-# First align desired regions
-Latin = tml['Latin']
-
-for family in families:
-    cfg = tml[family]
-    for style, opts in cfg.items():
-        offset = int(opts['offset'], 16)
-        exceptions = opts.get('exceptions', {})
-        print(exceptions)
-        offsets[style] = len(id_list)
-
-        count=0
-        idx = offset
-        while count < length[family]:
-            if idx in exceptions.get('undefined', []):
-                id_list.append(35) # which is .notdef glyph? Find first?
-                idx += 1
-            elif exceptions.get(idx, None):
-                id_list.append(int(exceptions[idx],16))
-                idx += 1
-                count += 1
-            else:
-                id_list.append(idx)
-                idx += 1
-                count += 1
-            
-print(id_list, len(id_list), offsets)
+        # Construct the rest of the IDs by simply placing them in order
+        # First reverse the dictionary, and update
+        __names = sorted(_names.items(), key = lambda  t: t[0])
+        self.id_map.update({ name: idx for idx, (_, name) in enumerate(__names) })

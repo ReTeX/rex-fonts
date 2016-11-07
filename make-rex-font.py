@@ -26,15 +26,6 @@ for cmap in cmaps:
         if value not in mapped:
             mapped.append(value)
 
-# TODO: Rework this correctly, might need to study how to best
-# to remove these symbols from CMAP
-# This acts to filter out GlyphNames we don't care about
-#def valid(glyph):
-#    # ssty glyphs -- may be useful later on for script variants
-#    if glyph[-2:] == 'st' or glyph[-2:] == 'ts':
-#        return False
-#    return True
-
 diff = [ glyph for glyph in glyphs 
             if glyph not in set(mapped) ]
 
