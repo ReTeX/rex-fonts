@@ -1,0 +1,145 @@
+# Reference: http://mirror.jmu.edu/pub/CTAN/macros/latex/contrib/unicode-math/unicode-math-usv.dtx
+#
+# TODO:
+#   - Greek
+#   - Dotless Variants?
+#   - Arabic?
+
+# Undefined symbols get a default value of their corresponding normal variant (ignoring style for now)
+# Define a map, (Normal Unicode, Style) -> (ID, AtomType)
+# Very few named-symbols require style remappings.  You can special case this, just worry about unicode.
+
+# Default styles
+[normal]
+digits="up"
+Latin="it"
+latin="it"
+Greek="it"
+
+[Greek.it]
+start="0x1D6E2"
+    [
+
+[Greek.up]
+start="0x0391"
+    [greek.up.exceptions]
+    undefined=["0x03A2"]
+
+[greek.lowercase]
+start="0x03B1"
+
+[Latin.bold]
+offset="0x1D400"
+
+[latin.bold]
+offset="0x1D41A"
+
+[digits.bold]
+offset="0x1D7CE"
+
+[Latin.italic]
+offset="0x1D434"
+
+[latin.italic]
+offset="0x1D44E"
+    [latin.italic.exceptions]
+    h="0x210E"
+    
+[Latin.bolditalic]
+offset="0x1D468"
+
+[latin.bolditalic]
+offset="0x1D482"
+    
+[Latin.cal]
+offset="0x1D49C"
+    [Latin.cal.exceptions]
+    B="0x212C"
+    E="0x2130"
+    F="0x2131"
+    H="0x210B"
+    I="0x2110"
+    L="0x2112"
+    M="0x2133"
+    R="0x211B"
+
+[latin.cal]
+offset="0x1D4B6"
+    [latin.cal.exceptions]
+    e="0x212F"
+    g="0x210A"
+    o="0x2134"
+    
+[Latin.cal.bold]
+offset="0x1D4D0"
+
+[latin.cal.bold]
+offset="0x1D4EA"
+
+[Latin.frak]
+offset="0x1D504"
+    [Latin.frak.exceptions]
+    C="0x212D"
+    H="0x210C"
+    J="0x2111"
+    K="0x211C"
+    Z="0x2128"
+
+[latin.frak]
+offset="0x1D51E"
+
+[Latin.serif]
+offset="0x1D5A0"
+
+[latin.serif]
+offset="0x1D5BA"
+
+[digits.serif]
+offset="0x1D7E2"
+
+[Latin.serif.bold]
+offset="0x1D5D4"
+
+[latin.serif.bold]
+offset="0x1D5EE"
+
+[digits.serif.bold]
+offset="0x1D7EC"
+
+[Latin.serif.italic]
+offset="0x1D608"
+
+[latin.serif.italic]
+offset="0x1D622"
+
+[Latin.serif.bolditalic] 
+offset="0x1D63C"
+
+[latin.serif.bolditalic]
+offset="0x1D656"
+
+[Latin.mono]
+offset="0x1D670"
+
+[latin.mono]
+offset="0x1D68A"
+
+[digits.mono]
+offset="0x1D7F7"
+
+[Latin.bb]
+offset="0x1D538"
+    [Latin.bb.exceptions]
+    C="0x2102"
+    H="0x210D"
+    N="0x2115"
+    P="0x2119"
+    Q="0x211A"
+    R="0x211D"
+    Z="0x2124"
+
+[latin.bb]
+offset="0x1D552"
+
+[digits.bb]
+offset="0x1D7D8"
