@@ -44,63 +44,54 @@ class MathFont:
         'greek': 25,
         'Greek': 25,
     }
-    
-    id2uni = {}     # Mapping from ID -> Unicode
-    names = {}      # Mapping from Unicode -> Name
-    ids = []        # List of consecutive Glyph IDs 
-    id_map = {}     # Mapping from Name -> ID
-    offsets = []    # Lists of (family, style, offset) for Glyph IDs 
-    families = [    # List of recognized families
-        'Latin', 'latin', 'digits', 'Greek'
-    ]
+
+    # List of recognized families
+    families = [ 'Latin', 'latin', 'digits', 'Greek' ]
+
+    name    = {}              # Mapping from Unicode -> Name
+    gid     = OrderedDict()   # Mapping from Unicode -> Glyph ID
+    offsets = []              # Lists of (family, style, offset) for Glyph IDs
     
     def __init__(self, font, config):
         self.font = TTFont(font)
         with open(config) as f:
             _config = toml.loads(f.read())
-        
-        self.undefined = int(_config['undefined'], 16)
-        
+ 
+        # Obtain Unicode -> Names mapping from CMAPS
         # TODO: We should probably handle Latin better
         for cmap in self.font['cmap'].tables:
-            self.names.update(cmap.cmap)
+            self.name.update(cmap.cmap)
         
-        # Temporary names dictionary which we will modify
-        _names = copy.deepcopy(self.names)
+        _names = copy.deepcopy(self.name)
         
-        # Construct the IDs table
+        # Construct the ID table, Unicode -> ID mapping.
+        id_count = 0
+        undefined = int(_config['undefined'], 16)
         for family in self.families:
             # Sort for deterministic ID construction
             for style, opts in sorted(_config[family].items(), key=lambda t: t[0]):
-                self.offsets.append((family, style, len(self.ids)))
+                self.offsets.append((family, style, id_count))
                 exceptions = opts.get('exceptions', {})
                 offset = int(opts['offset'], 16)   # Starting unicode offset
-                for idx in range(offset, offset + self.LENGTH[family]):
-                    if idx in exceptions.get('undefined', []):
-                        self.ids.append(self.undefined)
-                    elif exceptions.get(str(idx), None):
-                        self.ids.append(int(exceptions[str(idx)], 16))
-                    else:
-                        self.ids.append(idx)
-                        
-                    # we no longer need this in names
-                    self.id_map[_names.pop(idx, None)] = idx
+                for code in range(offset, offset + self.LENGTH[family]):
+                    if code in exceptions.get('undefined', []):
+                        code = undefined
+                    elif exceptions.get(str(code), None):
+                        code = int(exceptions[str(code)], 16)
 
-        # Construct the rest of the IDs by simply placing them in order
-        # First reverse the dictionary, and update
-        _names = sorted(_names.items(), key = lambda  t: t[0])
-        
-        # Delete duplicate values first and update dictionary
-        for idx, (code, name) in enumerate(_names):
-            self.id_map[name] = idx
+                    # we no longer want this in name in _name
+                    _names.pop(code, None)
+                    self.gid[code] = id_count
+                    id_count += 1
 
-        _names = OrderedDict(_names)
-        idx2name = { idx: name for name, idx in self.id_map.items() }
-        for idx in sorted(idx2name.keys()):
-            name =idx2name[idx]
-            for code, n in _names.items():
-                if n == name:
-                    self.id2uni[idx] = code
-                    
+        # Construct the rest of the IDs in order by unicode
+        _names = sorted(_names.keys())
+        self.gid.update([ (code, idx + id_count) for idx, code in enumerate(_names) ])
+
 mf = MathFont('out/rex-xits.otf', 'unicode.toml')
-print(sorted(mf.id2uni.keys()))
+
+## Assert that mf.gid is order
+for l, r in zip(mf.gid.items(), 
+         sorted(mf.gid.items(), key=lambda t: t[1])):
+    if l != r:
+        print(l, r)

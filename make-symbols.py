@@ -1,6 +1,7 @@
 #!/bin/python
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
+from generateIds import MathFont
 
 import os
 import sys
@@ -22,28 +23,10 @@ if len(sys.argv) != 2:
 
 font_file  = sys.argv[1]
 file_out = "out/" + os.path.splitext(os.path.basename(font_file))[0][4:] + "/symbols.rs"
-
 font     = TTFont(font_file)
 glyphset = font.getGlyphSet()
 
-# Find all unique GlyphNames that is reachable from a cmap
-names = {}
-for cmap in font['cmap'].tables:
-    names.update(cmap.cmap)
-
-# Delete name collisions, to align IDs properly
-unique_names = {}
-seen = set()
-for code, name in names.items():
-    if name in seen:
-        continue
-    seen.add(name)
-    unique_names[code] = name
-
-# Unicode -> Idx mapping
-ids = OrderedDict([(code, idx) 
-        for idx, code in enumerate(sorted(unique_names.keys()))])
-
+mf = MathFont(font_file, 'unicode.toml')
 
 ###
 # Parse unicode-math-table.tex
@@ -176,11 +159,11 @@ with open('unicode-math-table.tex', 'r') as f:
         cursor += 2  # Skip next `}{` sequence
         desc = line[cursor:-3]
 
-        if ids.get(icode, None) == None:
+        if mf.gid.get(icode, None) == None:
             print("Unable to find 0x{:X} -- {}.".format(int(code, 16), desc))
             continue
 
-        symbols.append([cmd, ids[icode], convert_type[atom], code, desc])
+        symbols.append([cmd, mf.gid[icode], convert_type[atom], code, desc])
 
 # Write '.../syc/symbols.rs'
 with open(file_out, 'w', newline='\n') as f:
@@ -196,10 +179,10 @@ with open(file_out, 'w', newline='\n') as f:
     f.write("    // Additional commands from TeX\n")
     for name, (code, ty) in additional_symbols:
         icode = int(code, 16)
-        if ids.get(icode, None) == None:
+        if mf.gid.get(icode, None) == None:
             print("Missing greek glyph: {}, {}".format(code, name))
             continue
-        f.write(template.format(name, ids[icode], ty, code, ""))
+        f.write(template.format(name, mf.gid[icode], ty, code, ""))
     f.write('};')
 
 
@@ -304,10 +287,10 @@ singles = [
 
 for start, end, atom in ranges:
     header += range_template.format(
-        start, end, ids[ord(start)] - ord(start), atom)
+        start, end, mf.gid[ord(start)] - ord(start), atom)
     
 for c, atom in singles:
-    header += single_template.format(c, ids[ord(c)], atom)
+    header += single_template.format(c, mf.gid[ord(c)], atom)
 
 header += """\
             _ => None,

@@ -5,7 +5,7 @@ from collections import OrderedDict
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
 
-from make-ids import MathFont
+from generateIds import MathFont
 
 if len(sys.argv) != 2:
     print("usage: make-glyphs.py font.otf")
@@ -21,20 +21,11 @@ glyphset = font.getGlyphSet()
 
 mf = MathFont(font_file, "unicode.toml")
 
-# This provides and ordered Name -> Unicode mapping with every other attribute initialized
-glyphs = OrderedDict(
-    [(name, { "unicode": uni, "xm": 0, "ym": 0, "xM": 0, "yM": 0, 
-             "attachment": 0, "italics": 0, "advance": 0, "lsb": 0 })
-        for idx, uni in sorted(mf.id2uni, key=lambda x: x[0])]);
-
-
-# Unicode -> Idx mapping
-ids = OrderedDict([(code, idx) 
-        for idx, code in enumerate(sorted(names.keys()))])
-
-with open('glyphs.out', 'w') as f:
-    for idx, values in enumerate(glyphs.items()):
-        f.write("{}: {}\n".format(idx, values[1]['unicode']))
+# This provides and ordered -> Unicode mapping with every other attribute initialized
+glyphs = OrderedDict([ (mf.name[code], 
+             { "unicode": code, "xm": 0, "ym": 0, "xM": 0, "yM": 0, 
+               "attachment": 0, "italics": 0, "advance": 0, "lsb": 0 })
+        for code in mf.gid.items() ])
 
 ###
 # Calculating the bounding box for each Glyph
