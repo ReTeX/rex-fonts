@@ -64,6 +64,15 @@ class MathFont:
         
         _names = copy.deepcopy(self.name)
         
+        __names = {}
+        seen = set()
+        for code, name in sorted(self.name.items()):
+            if name not in seen:
+                seen.add(name)
+                __names[code] = name
+                
+        self.name = __names
+        
         # Construct the ID table, Unicode -> ID mapping.
         id_count = 0
         undefined = int(_config['undefined'], 16)
@@ -95,3 +104,14 @@ for l, r in zip(mf.gid.items(),
          sorted(mf.gid.items(), key=lambda t: t[1])):
     if l != r:
         print(l, r)
+        
+## Assert that Unicode -> ID -> Unicode is identity modulo exceptions
+#glyphs = list(OrderedDict([ (mf.name[code],
+             #{ "unicode": code, "xm": 0, "ym": 0, "xM": 0, "yM": 0,
+               #"attachment": 0, "italics": 0, "advance": 0, "lsb": 0 })
+        #for code in mf.gid.keys() ]).items())
+
+##print(sorted(mf.name.keys()))
+#for code in sorted(mf.name.keys()):
+    #if glyphs[mf.gid[code]][1]['unicode'] != code:
+        #print(code, mf.gid[code], glyphs[mf.gid[code]][1]['unicode'])

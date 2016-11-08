@@ -140,7 +140,7 @@ additional_symbols = [
 ]
 
 # TeX -> Unicode template
-template = '    "{}" => Symbol {{ id: {}, atom_type: AtomType::{} }}, // Unicode: {}, {}\n'
+template = '    "{}" => Symbol {{ id: {}, atom_type: AtomType::{} }}, // Unicode: 0x{:X}, {}\n'
 
 # Parse 'unicode-math-table.tex'.  Store relavent information in
 # `symbols` as 4-tuples:
@@ -148,8 +148,7 @@ template = '    "{}" => Symbol {{ id: {}, atom_type: AtomType::{} }}, // Unicode
 symbols = []
 with open('unicode-math-table.tex', 'r') as f:
     for line in f:
-        code = "0x" + line[20:25]
-        icode = int(code, 16)
+        code = int("0x" + line[20:25],16)
         cmd  = line[28:53].strip()
 
         cursor = 56
@@ -159,16 +158,15 @@ with open('unicode-math-table.tex', 'r') as f:
         cursor += 2  # Skip next `}{` sequence
         desc = line[cursor:-3]
 
-        if mf.gid.get(icode, None) == None:
-            print("Unable to find 0x{:X} -- {}.".format(int(code, 16), desc))
+        if mf.gid.get(code, None) == None:
+            print("Unable to find 0x{:X} -- {}.".format(code, desc))
             continue
 
-        symbols.append([cmd, mf.gid[icode], convert_type[atom], code, desc])
+        symbols.append([cmd, mf.gid[code], convert_type[atom], code, desc])
 
 # Write '.../syc/symbols.rs'
 with open(file_out, 'w', newline='\n') as f:
     f.write(header)
-    # Write TeX Command -> Symbol hashmap.
     f.write("    // unicode-math.dtx command table\n")
     for tpl in symbols:
         # For operators, we annotate if they have limits or not on default
@@ -178,11 +176,11 @@ with open(file_out, 'w', newline='\n') as f:
     
     f.write("    // Additional commands from TeX\n")
     for name, (code, ty) in additional_symbols:
-        icode = int(code, 16)
-        if mf.gid.get(icode, None) == None:
+        code = int(code, 16)
+        if mf.gid.get(code, None) == None:
             print("Missing greek glyph: {}, {}".format(code, name))
             continue
-        f.write(template.format(name, mf.gid[icode], ty, code, ""))
+        f.write(template.format(name, mf.gid[code], ty, code, ""))
     f.write('};')
 
 

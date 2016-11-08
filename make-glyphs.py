@@ -22,28 +22,30 @@ glyphset = font.getGlyphSet()
 mf = MathFont(font_file, "unicode.toml")
 
 # This provides and ordered -> Unicode mapping with every other attribute initialized
-glyphs = OrderedDict([ (mf.name[code], 
+glyphs = OrderedDict([ (code, 
              { "unicode": code, "xm": 0, "ym": 0, "xM": 0, "yM": 0, 
                "attachment": 0, "italics": 0, "advance": 0, "lsb": 0 })
-        for code in mf.gid.items() ])
+        for code in mf.gid.keys() ])
 
 ###
 # Calculating the bounding box for each Glyph
 #
 
 pen = BoundsPen(None)
-for name in glyphs:
-    if name not in glyphs: continue
+for code, name in mf.name.items():
+    if name not in glyphset.keys():
+        print(name, 'not in glyphs')
+        continue
     glyph = glyphset.get(name)
     glyph.draw(pen)
     if pen.bounds == None:
         continue
 
     (xm, ym, xM, yM) = pen.bounds
-    glyphs[name]["xm"] = int(xm)
-    glyphs[name]["ym"] = int(ym)
-    glyphs[name]["xM"] = int(xM)
-    glyphs[name]["yM"] = int(yM)
+    glyphs[code]["xm"] = int(xm)
+    glyphs[code]["ym"] = int(ym)
+    glyphs[code]["xM"] = int(xM)
+    glyphs[code]["yM"] = int(yM)
     
     # Clear pen bounds
     pen.bounds = None
@@ -57,10 +59,12 @@ math = font['MATH'].table
 
 accent_table    = math.MathGlyphInfo.MathTopAccentAttachment
 accent_coverage = accent_table.TopAccentCoverage.glyphs
-for idx, name in enumerate(accent_coverage):
-    if name not in glyphs: continue
-    value = accent_table.TopAccentAttachment[idx].Value
-    glyphs[name]["attachment"] = value
+for code, name in mf.name.items():
+    if name in accent_coverage:
+        value = accent_table \
+            .TopAccentAttachment[accent_coverage.index(name)] \
+            .Value
+        glyphs[code]["attachment"] = value
     
 ###
 # Calculate the italics offsets
@@ -68,20 +72,22 @@ for idx, name in enumerate(accent_coverage):
 
 italics_table    = math.MathGlyphInfo.MathItalicsCorrectionInfo
 italics_coverage = italics_table.Coverage.glyphs
-for idx, name in enumerate(italics_coverage):
-    if name not in glyphs: continue
-    value = italics_table.ItalicsCorrection[idx].Value
-    glyphs[name]["italics"] = value
+for code, name in mf.name.items():
+    if name in italics_coverage:
+        value = italics_table \
+            .ItalicsCorrection[italics_coverage.index(name)] \
+            .Value
+        glyphs[code]["italics"] = value
 
 ###
 # Calculate the advance and left side bearing
 #
 
 metrics = font['hmtx'].metrics
-for name, values in font['hmtx'].metrics.items():
-    if name not in glyphs: continue
-    glyphs[name]["advance"] = values[0]
-    glyphs[name]["lsb"]     = values[1]
+for code, name in mf.name.items():
+    if name in metrics:
+        glyphs[code]["advance"] = metrics[name][0]
+        glyphs[code]["lsb"]     = metrics[name][1]
 
 ###
 # Build rust objects from the collected metrics
