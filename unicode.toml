@@ -1,145 +1,127 @@
 # Reference: http://mirror.jmu.edu/pub/CTAN/macros/latex/contrib/unicode-math/unicode-math-usv.dtx
 #
 # TODO:
-#   - Greek
 #   - Dotless Variants?
-#   - Arabic?
+#   - Variable Greeks? `\varepsilon` etc.
+#   - Variants of operators, paranthesis, etc.
 
-# Define style regions, then place then one by one
-# So we will want to sort by encoding { digits, Latin, ... }
+# This information is used in two places:
+#    For font selection: Unicode -> Font Selection -> Unicode
+#    Exceptions are used in Unicode -> { Font Dimensions, Unicode Redirect }
 
-undefined="0x29C4"
+#undefined="0x29C4"
 
-# Default styles
-[normal]
-digits="up"
-Latin="it"
-latin="it"
-Greek="it"
+[Latin]
+normal="rmit"
+normal_it="rmit"
+normal_bf="rmbf"
+normal_bfit="rmbfit"
+rm="65"
+rm_it="0x1D434"
+rm_bf="0x1D400"
+rm_bfit="0x1D468"
+bb="0x1D538"
+scr="0x1D49C"
+scr_bf="0x1D4D0"
+cal="0x1D49C"
+cal_bf="0x1D4D0"   # These should probably not be the same, need a fallback
+frak="0x1D504"
+frak_bf="0x1D56C"
+sf="0x1D5A0"
+sf_it="0x1D608"
+sf_bf="0x1D5D4"
+sf_bfit="0x1D63C"
+tt="0x1D670"
+    [Latin.exceptions]
+    # Calligraphic
+    "0x1D49D"="0x212C"    # B
+    "0x1D4A0"="0x2130"    # E
+    "0x1D4A1"="0x2131"    # F
+    "0x1D4A3"="0x210B"    # H
+    "0x1D4A4"="0x2110"    # I
+    "0x1D4A7"="0x2112"    # L
+    "0x1D4A8"="0x2133"    # M
+    "0x1D4AC"="0x211B"    # R
 
-[Greek.it]
-offset="0x1D6E2"
-
-[Greek.up]
-offset="0x0391"
-    [Greek.up.exceptions]
-    undefined=[930]  # 0x03A2
-
-[digits.up]
-offset="0x30"
+    # Double Struck
+    "0x1D53A"="0x2102"    # C
+    "0x1D53F"="0x210D"    # H
+    "0x1D545"="0x2115"    # N
+    "0x1D547"="0x2119"    # P
+    "0x1D548"="0x211A"    # Q
+    "0x1D549"="0x211D"    # R
+    "0x1D551"="0x2124"    # Z
     
-[Latin.bold]
-offset="0x1D400"
+    # Fractur
+    "0x1D506"="0x212D"    # C
+    "0x1D50B"="0x210C"    # H
+    "0x1D50C"="0x2111"    # I
+    "0x1D515"="0x211C"    # R
+    "0x1D51D"="0x2128"    # Z
 
-[latin.bold]
-offset="0x1D41A"
+[latin]
+normal="rmit"
+normal_it="rmit"
+normal_bf="rmbf"
+normal_bfit="rmbfit"
+rm="97"
+rm_it="0x1D44E"
+rm_bf="0x1D41A"
+rm_bfit="0x1D482"
+bb="0x1D552"
+scr="0x1D4B6"
+scr_bf="0x1D4EA"
+frak="0x1D51E"
+frak_bf="0x1D586"
+sf="0x1D5BA"
+sf_bf="0x1D5EE"
+sf_it="0x1D622"
+sf_bfit="0x1D656"
+tt="0x1D68A"
+    [latin.exceptions]
+    # Italic
+    "0x1D455"="0x210E"      # h
 
-[digits.bold]
-offset="0x1D7CE"
+    # Scripts
+    "0x1D4BA"="0x212F"      # e
+    "0x1D4BC"="0x210A"      # g
+    "0x1D4C4"="0x2134"      # o
 
-[Latin.italic]
-offset="0x1D434"
+[digits]
+normal="rm"
+normal_bf="rmbf"
+normal_it="sfit"
+normal_bfit="rmbf"
+rm="48"
+rm_bf="0x1D7CE"
+rm_bfit="0x1D7CE"
+bb="0x1D7D8"
+sf="0x1D7E2"
+sf_it="0x1D7E2"
+sf_bf="0x1D7CE"
+sf_bfit="0x1D7CE"
+tt="0x1D7F6"
 
-[latin.italic]
-offset="0x1D44E"
-    [latin.italic.exceptions]
-    '119893'="0x210E"    # h 0x1d455
-#     
-# [Latin.bolditalic]
-# offset="0x1D468"
-# 
-# [latin.bolditalic]
-# offset="0x1D482"
-#     
-# [Latin.cal]
-# offset="0x1D49C"
-#     [Latin.cal.exceptions]
-#     B="0x212C"
-#     E="0x2130"
-#     F="0x2131"
-#     H="0x210B"
-#     I="0x2110"
-#     L="0x2112"
-#     M="0x2133"
-#     R="0x211B"
-# 
-# [latin.cal]
-# offset="0x1D4B6"
-#     [latin.cal.exceptions]
-#     e="0x212F"
-#     g="0x210A"
-#     o="0x2134"
-#     
-# [Latin.cal.bold]
-# offset="0x1D4D0"
-# 
-# [latin.cal.bold]
-# offset="0x1D4EA"
-# 
-# [Latin.frak]
-# offset="0x1D504"
-#     [Latin.frak.exceptions]
-#     C="0x212D"
-#     H="0x210C"
-#     J="0x2111"
-#     K="0x211C"
-#     Z="0x2128"
-# 
-# [latin.frak]
-# offset="0x1D51E"
-# 
-# [Latin.serif]
-# offset="0x1D5A0"
-# 
-# [latin.serif]
-# offset="0x1D5BA"
-# 
-# [digits.serif]
-# offset="0x1D7E2"
-# 
-# [Latin.serif.bold]
-# offset="0x1D5D4"
-# 
-# [latin.serif.bold]
-# offset="0x1D5EE"
-# 
-# [digits.serif.bold]
-# offset="0x1D7EC"
-# 
-# [Latin.serif.italic]
-# offset="0x1D608"
-# 
-# [latin.serif.italic]
-# offset="0x1D622"
-# 
-# [Latin.serif.bolditalic] 
-# offset="0x1D63C"
-# 
-# [latin.serif.bolditalic]
-# offset="0x1D656"
-# 
-# [Latin.mono]
-# offset="0x1D670"
-# 
-# [latin.mono]
-# offset="0x1D68A"
-# 
-# [digits.mono]
-# offset="0x1D7F7"
-# 
-# [Latin.bb]
-# offset="0x1D538"
-#     [Latin.bb.exceptions]
-#     C="0x2102"
-#     H="0x210D"
-#     N="0x2115"
-#     P="0x2119"
-#     Q="0x211A"
-#     R="0x211D"
-#     Z="0x2124"
-# 
-# [latin.bb]
-# offset="0x1D552"
-# 
-# [digits.bb]
-# offset="0x1D7D8"
+[Greek]
+normal="rmit"
+normal_bf="rmbf"
+normal_it="rmit"
+normal_bfit="rmbfit"
+rm="0x391"
+rm_it="0x1D6E2"
+rm_bf="0x1D6A8"
+rm_bfit="0x1D71C"
+sf_bf="0x1D756"
+sf_it="0x1D790"
+
+[greek]
+normal="rmit"
+normal_bf="rmbf"
+normal_it="rmit"
+normal_bfit="rmbfit"
+rm="0x3B1"
+rm_it="0x1D6FC"
+rm_bf="0x1D6C2"
+rm_bfit="0x1D736"
+sf_bf="0x1D770"
+sf_bfit="0x1D7AA"
