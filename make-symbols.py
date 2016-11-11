@@ -1,7 +1,6 @@
 #!/bin/python
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
-from generateIds import MathFont
 
 import os
 import sys
@@ -26,7 +25,11 @@ file_out = "out/" + os.path.splitext(os.path.basename(font_file))[0][4:] + "/sym
 font     = TTFont(font_file)
 glyphset = font.getGlyphSet()
 
-mf = MathFont(font_file, 'unicode.toml')
+cmap = {}
+for c in font['cmap'].tables:
+    cmap.update(c.cmap)
+    
+print(cmap)
 
 ###
 # Parse unicode-math-table.tex
@@ -140,7 +143,7 @@ additional_symbols = [
 ]
 
 # TeX -> Unicode template
-template = '    "{}" => Symbol {{ id: {}, atom_type: AtomType::{} }}, // Unicode: 0x{:X}, {}\n'
+template = '    "{}" => Symbol {{ unicode: 0x{:X}, atom_type: AtomType::{} }}, // Unicode: 0x{:X}, {}\n'
 
 # Parse 'unicode-math-table.tex'.  Store relavent information in
 # `symbols` as 4-tuples:
@@ -148,7 +151,7 @@ template = '    "{}" => Symbol {{ id: {}, atom_type: AtomType::{} }}, // Unicode
 symbols = []
 with open('unicode-math-table.tex', 'r') as f:
     for line in f:
-        code = int("0x" + line[20:25],16)
+        code = int("0x" + line[20:25], 16)
         cmd  = line[28:53].strip()
 
         cursor = 56
@@ -158,11 +161,11 @@ with open('unicode-math-table.tex', 'r') as f:
         cursor += 2  # Skip next `}{` sequence
         desc = line[cursor:-3]
 
-        if mf.gid.get(code, None) == None:
+        if code not in cmap.keys():
             print("Unable to find 0x{:X} -- {}.".format(code, desc))
             continue
 
-        symbols.append([cmd, mf.gid[code], convert_type[atom], code, desc])
+        symbols.append([cmd, code, convert_type[atom], code, desc])
 
 # Write '.../syc/symbols.rs'
 with open(file_out, 'w', newline='\n') as f:
@@ -177,12 +180,11 @@ with open(file_out, 'w', newline='\n') as f:
     f.write("    // Additional commands from TeX\n")
     for name, (code, ty) in additional_symbols:
         code = int(code, 16)
-        if mf.gid.get(code, None) == None:
+        if code not in cmap:
             print("Missing greek glyph: {}, {}".format(code, name))
             continue
-        f.write(template.format(name, mf.gid[code], ty, code, ""))
+        f.write(template.format(name, code, ty, code, ""))
     f.write('};')
-
 
 
 # The following is scratch work, kept in case it's need later
@@ -222,82 +224,3 @@ with open(file_out, 'w', newline='\n') as f:
 # msans     -> 0x1D7E2  // Math Sans-serif Digit
 # mbfsans   -> 0x1D7EC  // Math Bold Sans-serif Digit
 # mtt       -> 0x1D7F6  // Math Monospace Digit
-
-header="""\
-// Do not modify.  Automatically generated.
-use parser::nodes::AtomType;
-use font::{Style, Symbol};
-
-pub trait IsAtom {
-    fn atom_type(&self, Style) -> Option<Symbol>;
-}
-
-impl IsAtom for char {
-    fn atom_type(&self, mode: Style) -> Option<Symbol> {
-        match *self {
-"""
-
-range_template ="""\
-            c @ '{}'...'{}' => Some(Symbol {{
-                id: (c as i32 + {}) as u16,
-                atom_type: AtomType::{},
-            }}),\n"""
-
-single_template="""\
-            c @ '{}' => Some(Symbol {{
-                id: {} as u16,
-                atom_type: AtomType::{},
-            }}),\n"""
-
-# A list of ranges that are have consecutive unicode points, which
-# are included in the font and thus have consecutive glyph ids
-ranges = [
-    ('a', 'z', 'Alpha'),
-    ('A', 'Z', 'Alpha'),
-    ('0', '9', 'Alpha'),
-    ('Α', 'Ρ', 'Alpha'), # \Alpha to \Rho
-    ('Σ', 'Ω', 'Alpha'), # \Sigma to \Omega
-    ('α', 'ρ', 'Alpha'), # \alpha to \rho
-    ('σ', 'ω', 'Alpha'), # \sigma to \omega
-]
-
-singles = [
-    ('*', 'Binary'),
-    ('+', 'Binary'),
-    ('(', 'Open'),
-    ('[', 'Open'),
-    (']', 'Close'),
-    (')', 'Close'),
-    ('?', 'Close'),
-    ('!', 'Close'),
-    ('=', 'Relation'),
-    ('<', 'Relation'),
-    ('>', 'Relation'),
-    (':', 'Relation'),
-    (',', 'Punctuation'),
-    (';', 'Punctuation'),
-    ('|', 'Ordinal'),
-    ('/', 'Ordinal'),
-    ('@', 'Ordinal'),
-    ('.', 'Ordinal'),
-    ('"', 'Ordinal'),
-]
-
-for start, end, atom in ranges:
-    header += range_template.format(
-        start, end, mf.gid[ord(start)] - ord(start), atom)
-    
-for c, atom in singles:
-    header += single_template.format(c, mf.gid[ord(c)], atom)
-
-header += """\
-            _ => None,
-        }
-    }
-}"""
-    
-file_out = "out/" + os.path.splitext(os.path.basename(font_file))[0][4:] + "/offsets.rs"
-
-with open(file_out, 'w', encoding='utf8') as f:
-    f.write(header)
-

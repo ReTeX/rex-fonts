@@ -88,5 +88,6 @@ for encoding, styles in cfg.items():
         weight = style.split('_', 1)[1] if len(style.split('_', 1)) > 1 else "None"
         weight = weight_map[weight]
         
-        print("    const " + encoding_map[encoding] + "_" + family.upper() + "_" + weight.upper() + ": u32 = " + styles[style])
+        print("    const " + encoding_map[encoding] + "_" + family.upper() + "_" + weight.upper() + 
+              ": u32 = " + str(int(styles[style],0) - data[encoding_map[encoding]][1]) + ";")
     

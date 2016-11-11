@@ -12,10 +12,10 @@
 #undefined="0x29C4"
 
 [Latin]
-normal="rmit"
-normal_it="rmit"
-normal_bf="rmbf"
-normal_bfit="rmbfit"
+normal="0x1D434"        #rm_it
+normal_it="0x1D434"     #rm_it
+normal_bf="0x1D400"     #rm_bf
+normal_bfit="0x1D468"   #rm_bfit
 rm="65"
 rm_it="0x1D434"
 rm_bf="0x1D400"
@@ -60,10 +60,10 @@ tt="0x1D670"
     "0x1D51D"="0x2128"    # Z
 
 [latin]
-normal="rmit"
-normal_it="rmit"
-normal_bf="rmbf"
-normal_bfit="rmbfit"
+normal="0x1D44E"        #rm_it
+normal_it="0x1D44E"     #rm_it
+normal_bf="0x1D41A"     #rm_bf
+normal_bfit="0x1D482"   #rm_bfit
 rm="97"
 rm_it="0x1D44E"
 rm_bf="0x1D41A"
@@ -88,10 +88,10 @@ tt="0x1D68A"
     "0x1D4C4"="0x2134"      # o
 
 [digits]
-normal="rm"
-normal_bf="rmbf"
-normal_it="sfit"
-normal_bfit="rmbf"
+normal="48"         #rm
+normal_bf="0x1D7CE" #rm_bf
+normal_it="0x1D7E2" #sf_it
+normal_bfit="0x1D7CE" #rm_bf
 rm="48"
 rm_bf="0x1D7CE"
 rm_bfit="0x1D7CE"
@@ -103,10 +103,10 @@ sf_bfit="0x1D7CE"
 tt="0x1D7F6"
 
 [Greek]
-normal="rmit"
-normal_bf="rmbf"
-normal_it="rmit"
-normal_bfit="rmbfit"
+normal="0x1D6E2"
+normal_bf="0x1D6A8"
+normal_it="0x1D6E2"
+normal_bfit="0x1D71C" 
 rm="0x391"
 rm_it="0x1D6E2"
 rm_bf="0x1D6A8"
@@ -115,10 +115,10 @@ sf_bf="0x1D756"
 sf_it="0x1D790"
 
 [greek]
-normal="rmit"
-normal_bf="rmbf"
-normal_it="rmit"
-normal_bfit="rmbfit"
+normal="0x1D6FC"
+normal_bf="0x1D6C2"
+normal_it="0x1D6FC"
+normal_bfit="0x1D736"
 rm="0x3B1"
 rm_it="0x1D6FC"
 rm_bf="0x1D6C2"
