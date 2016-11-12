@@ -1,6 +1,7 @@
 import os
 import sys
 from collections import OrderedDict
+import toml
 
 from fontTools.ttLib import TTFont
 from fontTools.pens.boundsPen import BoundsPen
@@ -108,8 +109,25 @@ TEMPLATE = "    m.insert({unicode}, Glyph {{ unicode: {unicode}, "\
            "advance: {advance}, lsb: {lsb}, "\
            "italics: {italics}, attachment: {attachment} }});\n"
 
+REPLACE_TEMPLATE = "    m.insert({old}, Glyph {{ unicode: {new}, "\
+           "bbox: BBox({xm},{ym},{xM},{yM}), " \
+           "advance: {advance}, lsb: {lsb}, "\
+           "italics: {italics}, attachment: {attachment} }});\n"
+
 for code in cmap.keys():
     header += TEMPLATE.format(**glyphs[cmap[code]])
+
+header += "    // Replacement UNICODE values from unicode.toml exceptions\n"
+    
+# Handle exceptions from unicode.toml
+t = toml.load('unicode.toml')
+for family in t.values():
+    if family.get('exceptions', None):
+        for old, new in family['exceptions'].items():
+            z = glyphs[cmap[int(new,0)]].copy()
+            z['old'] = int(old, 0)
+            z['new'] = int(new, 0)
+            header += REPLACE_TEMPLATE.format(**z)
 
 header += "];\n"
 with open(file_out, 'w') as f:
