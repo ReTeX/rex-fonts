@@ -132,4 +132,3 @@ for family in t.values():
 header += "];\n"
 with open(file_out, 'w') as f:
     f.write(header)
-
