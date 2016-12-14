@@ -20,11 +20,17 @@ header = '''\
 // 
 // Font File: {}
 // Font Nmae: {}
-use font::Constants;
+#![allow(dead_code)]
+use dimensions::FontUnit;
 
-#[allow(dead_code)]
 
 '''.format(font_file, font_name)
+
+header += "pub static MIN_CONNECTOR_OVERLAP: FontUnit<u16> = FontUnit({});\n"\
+    .format(font['MATH'].table.MathVariants.MinConnectorOverlap)
+    
+header += "pub static UNITS_PER_EM: FontUnit<u16> = FontUnit({});\n\n"\
+    .format(font['head'].unitsPerEm)
 
 constants = [
     ('AccentBaseHeight', 'accent_base_height'),
@@ -87,7 +93,7 @@ constants = [
 
 u32 = [ 'DelimitedSubFormulaMinHeight', 'DisplayOperatorMinHeight' ]
 
-template = 'pub static {:<40}: FontUnit<{}> = FontUnit({});\n'
+template = 'pub static {:<46}: FontUnit<{}> = FontUnit({});\n'
 for constant, name in constants:
     result = 0
     try:
@@ -98,9 +104,9 @@ for constant, name in constants:
         print("Unable to find constant: ", constant)
         continue
     if name in u32:
-        header += template.format(name, 'u32', result)
+        header += template.format(name.upper(), 'u32', result)
     else:
-        header += template.format(name, 'i16', result)
+        header += template.format(name.upper(), 'i16', result)
 
 with open(file_out, 'w') as f:
     f.write(header)
