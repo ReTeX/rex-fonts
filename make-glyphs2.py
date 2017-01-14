@@ -92,7 +92,7 @@ for name in glyphs:
 
 header = """
 // Automatically generated... blah blah blah, you know the deal.
-use std::collections::HashMap;
+use fnv::FnvHashMap;
 use font::{ Glyph, BBox };
 
 static GLYPHS_DATA: [Glyph; 1] = [
@@ -108,8 +108,9 @@ REPLACE_TEMPLATE = "    Glyph {{ unicode: {new}, "\
            "advance: {advance}, lsb: {lsb}, "\
            "italics: {italics}, attachment: {attachment} }},\n"
 
-hashmap = list(cmap.keys())
+hashmap = []
 array   = [ TEMPLATE.format(**glyphs[cmap[code]]) for code in cmap.keys() ]
+size    = len(array)
 
 header += "    // Replacement UNICODE values from unicode.toml exceptions\n"
     
@@ -128,12 +129,17 @@ header += "".join(array)
 header += "];\n\n"
 header += """
 lazy_static! {
-    pub static ref GLYPHS: <u32, &Glyph> = {
-        let mut h = HashMap::new();
+    pub static ref GLYPHS: FnvHashMap<u32, &'static Glyph> = {
+        let mut h = FnvHashMap::default();
+        
+        for (idx, glyph) in GLYPHS_DATA.iter().enumerate() {
+            h.insert(glyph.unicode, &GLYPHS_DATA[idx])
+        }
+
 """
 
 for (idx, code) in enumerate(hashmap):
-    header += "        h.insert({}, &GLYPHS_DATA[{}]);\n".format(code, idx)
+    header += "        h.insert({}, &GLYPHS_DATA[{}]);\n".format(code, idx + size)
 
 header += """
         h
