@@ -109,16 +109,16 @@ REPLACE_TEMPLATE = "    Glyph {{ unicode: {new}, "\
            "italics: {italics}, attachment: {attachment} }},\n"
 
 hashmap = []
-array   = [ TEMPLATE.format(**glyphs[cmap[code]]) for code in cmap.keys() ]
+array   = [ TEMPLATE.format(**glyphs[cmap[code]]) for code in sorted(cmap.keys()) ]
 size    = len(array)
 
 header += "    // Replacement UNICODE values from unicode.toml exceptions\n"
     
 # Handle exceptions from unicode.toml
 t = toml.load('unicode.toml')
-for family in t.values():
+for (name, family) in sorted(t.items()):
     if family.get('exceptions', None):
-        for old, new in family['exceptions'].items():
+        for old, new in sorted(family['exceptions'].items()):
             z = glyphs[cmap[int(new,0)]].copy()
             z['old'] = int(old, 0)
             z['new'] = int(new, 0)
