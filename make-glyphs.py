@@ -23,6 +23,10 @@ glyphset = font.getGlyphSet()
 cmap = {}
 for c in font['cmap'].tables:
     cmap.update(c.cmap)
+    
+for c in font['cmap'].tables:
+    if c.cmap.get(150, None):
+        print(c)
 
 # This provides and ordered -> Unicode mapping with every other attribute initialized
 glyphs = OrderedDict([ (name,

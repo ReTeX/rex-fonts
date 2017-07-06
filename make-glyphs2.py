@@ -133,7 +133,7 @@ lazy_static! {
         let mut h = FnvHashMap::default();
         
         for (idx, glyph) in GLYPHS_DATA.iter().enumerate() {
-            h.insert(glyph.unicode, &GLYPHS_DATA[idx])
+            h.insert(glyph.unicode, &GLYPHS_DATA[idx]);
         }
 
 """

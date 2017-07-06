@@ -132,39 +132,6 @@ static GLYPHS_DATA: [Glyph; 1] = [
     Glyph { unicode: 124, bbox: BBox(127,-189,193,690), advance: 320, lsb: 127, italics: 0, attachment: 0 },
     Glyph { unicode: 125, bbox: BBox(130,-181,380,680), advance: 480, lsb: 130, italics: 0, attachment: 0 },
     Glyph { unicode: 126, bbox: BBox(40,183,502,325), advance: 541, lsb: 40, italics: 0, attachment: 0 },
-    Glyph { unicode: 127, bbox: BBox(0,0,250,684), advance: 250, lsb: 0, italics: 0, attachment: 0 },
-    Glyph { unicode: 196, bbox: BBox(15,0,707,872), advance: 722, lsb: 15, italics: 0, attachment: 0 },
-    Glyph { unicode: 197, bbox: BBox(15,0,707,961), advance: 722, lsb: 15, italics: 0, attachment: 0 },
-    Glyph { unicode: 199, bbox: BBox(28,-215,633,676), advance: 667, lsb: 28, italics: 0, attachment: 0 },
-    Glyph { unicode: 201, bbox: BBox(12,0,597,928), advance: 611, lsb: 12, italics: 0, attachment: 0 },
-    Glyph { unicode: 209, bbox: BBox(12,-11,707,888), advance: 722, lsb: 12, italics: 0, attachment: 0 },
-    Glyph { unicode: 214, bbox: BBox(34,-14,688,872), advance: 722, lsb: 34, italics: 0, attachment: 0 },
-    Glyph { unicode: 220, bbox: BBox(14,-14,705,872), advance: 722, lsb: 14, italics: 0, attachment: 0 },
-    Glyph { unicode: 225, bbox: BBox(37,-10,442,678), advance: 444, lsb: 37, italics: 0, attachment: 0 },
-    Glyph { unicode: 224, bbox: BBox(37,-10,442,678), advance: 444, lsb: 37, italics: 0, attachment: 0 },
-    Glyph { unicode: 226, bbox: BBox(37,-10,442,674), advance: 444, lsb: 37, italics: 0, attachment: 0 },
-    Glyph { unicode: 228, bbox: BBox(37,-10,442,622), advance: 444, lsb: 37, italics: 0, attachment: 0 },
-    Glyph { unicode: 227, bbox: BBox(37,-10,442,638), advance: 444, lsb: 37, italics: 0, attachment: 0 },
-    Glyph { unicode: 229, bbox: BBox(37,-10,442,713), advance: 444, lsb: 37, italics: 0, attachment: 0 },
-    Glyph { unicode: 231, bbox: BBox(25,-215,412,460), advance: 444, lsb: 25, italics: 0, attachment: 0 },
-    Glyph { unicode: 233, bbox: BBox(25,-10,424,678), advance: 444, lsb: 25, italics: 0, attachment: 0 },
-    Glyph { unicode: 232, bbox: BBox(25,-10,424,678), advance: 444, lsb: 25, italics: 0, attachment: 0 },
-    Glyph { unicode: 234, bbox: BBox(25,-10,424,674), advance: 444, lsb: 25, italics: 0, attachment: 0 },
-    Glyph { unicode: 235, bbox: BBox(25,-10,424,622), advance: 444, lsb: 25, italics: 0, attachment: 0 },
-    Glyph { unicode: 237, bbox: BBox(16,0,273,678), advance: 278, lsb: 16, italics: 0, attachment: 0 },
-    Glyph { unicode: 236, bbox: BBox(6,0,243,678), advance: 278, lsb: 6, italics: 0, attachment: 0 },
-    Glyph { unicode: 238, bbox: BBox(-17,0,294,674), advance: 278, lsb: -17, italics: 0, attachment: 0 },
-    Glyph { unicode: 239, bbox: BBox(-10,0,288,622), advance: 278, lsb: -10, italics: 0, attachment: 0 },
-    Glyph { unicode: 241, bbox: BBox(16,0,485,638), advance: 500, lsb: 16, italics: 0, attachment: 0 },
-    Glyph { unicode: 243, bbox: BBox(29,-10,470,678), advance: 500, lsb: 29, italics: 0, attachment: 0 },
-    Glyph { unicode: 242, bbox: BBox(29,-10,470,678), advance: 500, lsb: 29, italics: 0, attachment: 0 },
-    Glyph { unicode: 244, bbox: BBox(29,-10,470,674), advance: 500, lsb: 29, italics: 0, attachment: 0 },
-    Glyph { unicode: 246, bbox: BBox(29,-10,470,622), advance: 500, lsb: 29, italics: 0, attachment: 0 },
-    Glyph { unicode: 245, bbox: BBox(29,-10,470,638), advance: 500, lsb: 29, italics: 0, attachment: 0 },
-    Glyph { unicode: 250, bbox: BBox(9,-10,480,678), advance: 500, lsb: 9, italics: 0, attachment: 0 },
-    Glyph { unicode: 249, bbox: BBox(9,-10,480,678), advance: 500, lsb: 9, italics: 0, attachment: 0 },
-    Glyph { unicode: 251, bbox: BBox(9,-10,480,674), advance: 500, lsb: 9, italics: 0, attachment: 0 },
-    Glyph { unicode: 252, bbox: BBox(9,-10,480,622), advance: 500, lsb: 9, italics: 0, attachment: 0 },
     Glyph { unicode: 160, bbox: BBox(0,0,0,0), advance: 250, lsb: 0, italics: 0, attachment: 0 },
     Glyph { unicode: 161, bbox: BBox(96,-218,202,468), advance: 330, lsb: 96, italics: 0, attachment: 0 },
     Glyph { unicode: 162, bbox: BBox(53,-138,448,579), advance: 500, lsb: 53, italics: 0, attachment: 0 },
@@ -4562,33 +4529,33 @@ lazy_static! {
         let mut h = FnvHashMap::default();
         
         for (idx, glyph) in GLYPHS_DATA.iter().enumerate() {
-            h.insert(glyph.unicode, &GLYPHS_DATA[idx])
+            h.insert(glyph.unicode, &GLYPHS_DATA[idx]);
         }
 
-        h.insert(0x1D49D, &GLYPHS_DATA[4525]);
-        h.insert(0x1D4A0, &GLYPHS_DATA[4526]);
-        h.insert(0x1D4A1, &GLYPHS_DATA[4527]);
-        h.insert(0x1D4A3, &GLYPHS_DATA[4528]);
-        h.insert(0x1D4A4, &GLYPHS_DATA[4529]);
-        h.insert(0x1D4A7, &GLYPHS_DATA[4530]);
-        h.insert(0x1D4A8, &GLYPHS_DATA[4531]);
-        h.insert(0x1D4AD, &GLYPHS_DATA[4532]);
-        h.insert(0x1D506, &GLYPHS_DATA[4533]);
-        h.insert(0x1D50B, &GLYPHS_DATA[4534]);
-        h.insert(0x1D50C, &GLYPHS_DATA[4535]);
-        h.insert(0x1D515, &GLYPHS_DATA[4536]);
-        h.insert(0x1D51D, &GLYPHS_DATA[4537]);
-        h.insert(0x1D53A, &GLYPHS_DATA[4538]);
-        h.insert(0x1D53F, &GLYPHS_DATA[4539]);
-        h.insert(0x1D545, &GLYPHS_DATA[4540]);
-        h.insert(0x1D547, &GLYPHS_DATA[4541]);
-        h.insert(0x1D548, &GLYPHS_DATA[4542]);
-        h.insert(0x1D549, &GLYPHS_DATA[4543]);
-        h.insert(0x1D551, &GLYPHS_DATA[4544]);
-        h.insert(0x1D455, &GLYPHS_DATA[4545]);
-        h.insert(0x1D4BA, &GLYPHS_DATA[4546]);
-        h.insert(0x1D4BC, &GLYPHS_DATA[4547]);
-        h.insert(0x1D4C4, &GLYPHS_DATA[4548]);
+        h.insert(0x1D49D, &GLYPHS_DATA[4492]);
+        h.insert(0x1D4A0, &GLYPHS_DATA[4493]);
+        h.insert(0x1D4A1, &GLYPHS_DATA[4494]);
+        h.insert(0x1D4A3, &GLYPHS_DATA[4495]);
+        h.insert(0x1D4A4, &GLYPHS_DATA[4496]);
+        h.insert(0x1D4A7, &GLYPHS_DATA[4497]);
+        h.insert(0x1D4A8, &GLYPHS_DATA[4498]);
+        h.insert(0x1D4AD, &GLYPHS_DATA[4499]);
+        h.insert(0x1D506, &GLYPHS_DATA[4500]);
+        h.insert(0x1D50B, &GLYPHS_DATA[4501]);
+        h.insert(0x1D50C, &GLYPHS_DATA[4502]);
+        h.insert(0x1D515, &GLYPHS_DATA[4503]);
+        h.insert(0x1D51D, &GLYPHS_DATA[4504]);
+        h.insert(0x1D53A, &GLYPHS_DATA[4505]);
+        h.insert(0x1D53F, &GLYPHS_DATA[4506]);
+        h.insert(0x1D545, &GLYPHS_DATA[4507]);
+        h.insert(0x1D547, &GLYPHS_DATA[4508]);
+        h.insert(0x1D548, &GLYPHS_DATA[4509]);
+        h.insert(0x1D549, &GLYPHS_DATA[4510]);
+        h.insert(0x1D551, &GLYPHS_DATA[4511]);
+        h.insert(0x1D455, &GLYPHS_DATA[4512]);
+        h.insert(0x1D4BA, &GLYPHS_DATA[4513]);
+        h.insert(0x1D4BC, &GLYPHS_DATA[4514]);
+        h.insert(0x1D4C4, &GLYPHS_DATA[4515]);
 
         h
     };
