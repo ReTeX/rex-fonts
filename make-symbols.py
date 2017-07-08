@@ -87,7 +87,6 @@ operator_limits = {
     "bigsqcup",
 }
 
-# Fixme: This should be sorted, use a list instead.
 additional_symbols = [
     ("Alpha",   ("0x391", "Alpha")),
     ("Beta",    ("0x392", "Alpha")),

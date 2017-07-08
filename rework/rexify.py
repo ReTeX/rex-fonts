@@ -86,17 +86,6 @@ def make_accessible(ttfont):
     del ttfont.reader['GDEF']
     del ttfont.reader['GPOS']
 
-def rex_reachable(ttfont):
-    '''
-    Generate a list of symbols reachable from the rex commands.
-    This requires walking the Math tables, and reading unicode-math.tex.
-    However, we also need a whitelist of codepoint groups to accept.
-    '''
-
-    whitelist = Set()
-    
-
-    pass
 
 def generate_metrics(ttfont, out):
     '''
