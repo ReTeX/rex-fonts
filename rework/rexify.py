@@ -27,10 +27,11 @@ def rexify(font, out):
     them at `out`.metrics.
     '''
 
-    ttfont = TTFont(font)
+    ttfont = TTFont(font, recalcBBoxes=False)
     make_accessible(ttfont)
     generate_metrics(ttfont, out + ".metrics")
     ttfont.save(out)
+
 
 def make_accessible(ttfont):
     '''
@@ -40,10 +41,10 @@ def make_accessible(ttfont):
     '''
 
     accessible = set(ttfont['cmap'].buildReversed().keys())
-    glyphs = sorted(ttfont.getGlyphSet().keys())
+    accessible.add('.notdef')
+    glyphs = ttfont.getGlyphSet().keys()
 
-    unaccessible = sorted(
-        [glyph for glyph in glyphs if glyph not in accessible])
+    unaccessible = [glyph for glyph in glyphs if glyph not in accessible]
     required = len(unaccessible)
 
     if required == 0:
@@ -53,7 +54,7 @@ def make_accessible(ttfont):
         print(required, "glyphs need to be placed into PUA.")
 
     # Find a suitably long vacant region in the PUA, U+E000–U+F8FF.
-    used = ttfont['cmap'].getcmap(3, 1).cmap.keys()
+    used = ttfont['cmap'].getcmap(3, 10).cmap.keys()
     unused = (usv for usv in range(0xE000, 0xF8FF) if usv not in used)
 
     start = next(csv for csv, l in ContinuousRegions(unused) if l >= required)
@@ -70,11 +71,32 @@ def make_accessible(ttfont):
     # To prevent thrashing the CMAPs, we reorder the glyph indices
     # to match the order for which they are placed in PUA
     cache = set(unaccessible)
-    new_order = [g for g in ttfont.getGlyphOrder() if g not in cache] + \
-        unaccessible
-
+    old_order = ttfont.getGlyphOrder()
+    new_order = [g for g in old_order if g not in cache] + unaccessible
     ttfont.setGlyphOrder(new_order)
 
+    # Unfortunately fonttools doesn't handle glyph reorder very well.
+    # The CFF tables need to be updated manually, and so do the
+    # GSUB/GDEF/GPOS tables.  Since we don't need the latter
+    # we just delete them.
+    cff = ttfont['CFF '].cff
+    cff[cff.fontNames[0]].charset = new_order
+
+    del ttfont.reader['GSUB']
+    del ttfont.reader['GDEF']
+    del ttfont.reader['GPOS']
+
+def rex_reachable(ttfont):
+    '''
+    Generate a list of symbols reachable from the rex commands.
+    This requires walking the Math tables, and reading unicode-math.tex.
+    However, we also need a whitelist of codepoint groups to accept.
+    '''
+
+    whitelist = Set()
+    
+
+    pass
 
 def generate_metrics(ttfont, out):
     '''
@@ -103,6 +125,7 @@ def generate_metrics(ttfont, out):
 
     with open(out, 'w') as file:
         json.dump(metrics, file)
+
 
 class ContinuousRegions:
     '''

@@ -13,3 +13,7 @@ path = "src/main.rs"
 [[bin]]
 name = "unicode-math"
 path = "tools/unicode-math.rs"
+
+[[bin]]
+name = "unicode-math-codepoints"
+path = "tools/unicode-math-codepoints.rs"
