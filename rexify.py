@@ -7,13 +7,20 @@ and modify the CMAPs to include these glyphs.  This is necessary for when
 you want to render math in SVG by referring to glyphs from their usv.
 '''
 
+import os
 from fontTools.ttLib import TTFont
+from tools.accessible import make_accessible
+from tools.constants import gen_constants
+from tools.glyphs import gen_glyphs
+from tools.kerning import gen_kerning
+from tools.symbols import gen_symbols
+from tools.variants import gen_variants
 
 # TODO: Deleted undesired glyphs.
 # TODO: We need to modify the name/copyright to adhere to SIL license.
 
 
-def rexify(font, out):
+def rexify(font, out): 
     '''
     Rexify font.
 
@@ -21,20 +28,25 @@ def rexify(font, out):
     place them in a PUA, and modify the CMAPs so that these
     glyphs are publicly accessible.
 
-    This will also generate the metrics for `font` and store
-    them at `out`.metrics.
+    This will also generate the required tables for ReX.
     '''
 
+    # Make glyphs accessible.
     ttfont = TTFont(font, recalcBBoxes=False)
-    make_accessible(ttfont, font)
-    generate_metrics(ttfont, out + ".metrics")
-    ttfont.save(out)
+    make_accessible(ttfont)
+    ttfont.save(out + os.path.basename(font))
+
+    gen_constants(ttfont, out)
+    gen_glyphs(ttfont, out)
+    gen_kerning(ttfont, out)
+    gen_symbols(ttfont, out)
+    gen_variants(ttfont, out)
 
 
 if __name__ == "__main__":
     import sys
 
-    USAGE = "usage: rexify.py in.otf out.otf\n" \
+    USAGE = "usage: rexify.py in.otf out/\n" \
             "`rexify.py` will gather all glyphs from `in.otf` that aren't accessible " \
             "from a CMAP and place them into Private Use Area codepoitns. Then " \
             "`rexify.py` will update the CMAPs to make these glyphs accessible."
@@ -49,7 +61,11 @@ if __name__ == "__main__":
 
     FONT = sys.argv[1]
     OUT = sys.argv[2]
+    
+    if not os.path.exists(OUT):
+        print("Creating directory:", OUT)
+        os.makedirs(OUT)
 
     print("Rexifying:", FONT)
     rexify(FONT, OUT)
-    print("Finished rexifying:", OUT)
+    print("Finished rexifying:", FONT)
