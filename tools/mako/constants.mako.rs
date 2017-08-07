@@ -15,5 +15,5 @@ pub const ${name.upper()}: FontUnit = fontunit!(${unit});
 % endfor
 
 % for (name, unit) in percents:
-pub const ${name.upper()}: FonUnit = fontunit_raw!(${hex(int(unit / 100 * 2 ** 8))}); // ${unit} %
+pub const ${name.upper()}: FontUnit = fontunit_raw!(${hex(int(unit / 100 * 2 ** 8))}); // ${unit} %
 % endfor

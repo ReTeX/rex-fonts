@@ -12,15 +12,16 @@
 // Modified: ${datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 use static_map;
 use font_types::{Glyph, BBox};
-use font_types::FontUnit as Fp;
 
-pub static GLYPHS: Map<u32, Glyph> = static_map! {
+pub static GLYPHS: static_map::Map<u32, Glyph> = static_map! {
+    Default: Glyph { unicode: 0x0000_u32, BBox(fontunit!(0), fontunit!(0), fontunit!(0), fontunit!(0)), attachment: fontunit!(0), advance: fontunit!(0), lsb: fontunit!(0), italics: fontunit!(0) },
+
 %for glyph in sorted(glyphs.values(), key=lambda val: val['usv']):
-    ${'0x%04x' % glyph['usv']}_u32 => Glyph { unicode: ${'0x%04x' % glyph['usv']}_u32, BBox(fontunit!(${glyph['xmin']}), fontunit!(${glyph['ymin']}), fontunit!(${glyph['xmax']}), fontunit!(${glyph['ymax']})), attachment: fontunit!(${glyph['attachment']}), advance: fontunit!(${glyph['advance']}), lsb: fontunit!(${glyph['lsb']}), italics: fontunit!(${glyph['italics']}) },
+    ${'0x%04x' % glyph['usv']}_u32 => Glyph { unicode: ${'0x%04x' % glyph['usv']}_u32, bbox: BBox(fontunit!(${glyph['xmin']}), fontunit!(${glyph['ymin']}), fontunit!(${glyph['xmax']}), fontunit!(${glyph['ymax']})), attachment: fontunit!(${glyph['attachment']}), advance: fontunit!(${glyph['advance']}), lsb: fontunit!(${glyph['lsb']}), italics: fontunit!(${glyph['italics']}) },
 %endfor
 
     // SHIM
 %for (new, glyph) in shim:
-    ${'0x%04x' % new}_u32 => Glyph { unicode: ${'0x%04x' % glyph['usv']}_u32, BBox(fontunit!(${glyph['xmin']}), fontunit!(${glyph['ymin']}), fontunit!(${glyph['xmax']}), fontunit!(${glyph['ymax']})), attachment: fontunit!(${glyph['attachment']}), advance: fontunit!(${glyph['advance']}), lsb: fontunit!(${glyph['lsb']}), italics: fontunit!(${glyph['italics']}) },
+    ${'0x%04x' % new}_u32 => Glyph { unicode: ${'0x%04x' % glyph['usv']}_u32, bbox: BBox(fontunit!(${glyph['xmin']}), fontunit!(${glyph['ymin']}), fontunit!(${glyph['xmax']}), fontunit!(${glyph['ymax']})), attachment: fontunit!(${glyph['attachment']}), advance: fontunit!(${glyph['advance']}), lsb: fontunit!(${glyph['lsb']}), italics: fontunit!(${glyph['italics']}) },
 %endfor
 };
